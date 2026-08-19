@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": null,
+  "methodology": {
+    "name": "KINGAI Evidence Coverage Confidence",
+    "meaning": "Measures public evidence coverage and source breadth only. It is not a score of country quality, truth, safety, freedom or human rights.",
+    "max_score": 100
+  },
+  "countries": []
+}
