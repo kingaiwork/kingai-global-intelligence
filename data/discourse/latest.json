@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-08-19T21:40:00.000Z",
+  "policy": {
+    "classification": "unverified-public-discourse",
+    "direct_score_weight": 0,
+    "notes": "Open-web and public social posts are context signals only. They may be false, coordinated, satirical, duplicated, state-linked or advocacy-driven. Volume is not treated as truth."
+  },
+  "countries": [
+    {
+      "cca3": "CHN",
+      "web": [],
+      "social": [],
+      "status": [
+        {"source":"gdelt-doc-2","records":0,"error":"Awaiting next private-core scheduled generation."},
+        {"source":"bluesky-public-search","records":0,"error":"Awaiting next private-core scheduled generation."}
+      ]
+    }
+  ]
+}
