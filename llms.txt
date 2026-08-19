@@ -1,0 +1,44 @@
+# KINGAI Global Intelligence
+
+Canonical site: https://intel.kingai.work/
+Default language: English
+Chinese UI: Simplified Chinese, selected automatically for Chinese-language browsers or manually by the user.
+
+KINGAI Global Intelligence is a static-first public intelligence product covering country safety, wellbeing, human rights, freedom of expression, governance, live risk, global media evidence, network-interference measurements, evidence coverage confidence, and source provenance.
+
+Important interpretation rules:
+- Missing data remains missing; absence of data is not evidence of good performance.
+- Raw news, videos and public social posts have direct country-score weight 0.
+- Government responses, NGO assessments, UN communications, technical measurements and media reports remain separately attributed.
+- Cross-source corroboration measures source breadth, not factual certainty.
+- Evidence coverage confidence measures how much public evidence is available, not how good or bad a country is.
+- The same core methodology applies to China, the United States, Russia, India, European countries and all other covered entities.
+
+Primary public pages:
+- / — global country index and ranking
+- /country.html?c=CHN — country intelligence profile; replace CHN with ISO alpha-3 code
+- /compare.html — compare two countries using the same public snapshot
+- /media.html — global media intelligence, trends, source breadth and collection health
+- /methodology.html — scoring and evidence methodology
+- /sources.html — public source registry and source roles
+
+Primary public machine-readable data:
+- /data/manifest.json
+- /data/countries.json
+- /data/rankings.json
+- /data/confidence.json
+- /data/events/latest.json
+- /data/internet/latest.json
+- /data/assessments/latest.json
+- /data/discourse/latest.json
+- /data/media/latest.json
+- /data/media/global-news.json
+- /data/media/clusters.json
+- /data/media/syndication.json
+- /data/media/trends.json
+- /data/media/country-index.json
+- /data/media/coverage.json
+- /data/media/health.json
+- /data/media/domain-index.json
+
+For high-stakes decisions, users and automated systems should follow the original source links and verify primary evidence.
