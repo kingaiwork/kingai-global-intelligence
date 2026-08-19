@@ -3,56 +3,177 @@ name: Deploy Cloudflare Pages
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'data/deployment-status.json'
   workflow_dispatch:
 
+concurrency:
+  group: kingai-cloudflare-pages-production
+  cancel-in-progress: true
+
 permissions:
-  contents: read
+  contents: write
   deployments: write
 
 env:
   CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
   PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+  PAGES_DOMAIN: ${{ vars.CLOUDFLARE_PAGES_DOMAIN }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Validate deploy credentials
         id: creds
+        shell: bash
         run: |
           if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "Cloudflare credentials are not configured; deployment is skipped."
+            echo "Cloudflare credentials are not configured; deployment cannot run."
           fi
+
       - name: Prepare static output
         if: steps.creds.outputs.ready == 'true'
+        shell: bash
         run: |
           mkdir -p _site
           rsync -a ./ _site/ \
             --exclude '.git' \
             --exclude '.github' \
             --exclude '_site' \
-            --exclude 'README.md'
+            --exclude 'README.md' \
+            --exclude '.deploy-trigger'
+
       - name: Setup Node
         if: steps.creds.outputs.ready == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+
       - name: Ensure Pages project exists
+        id: project
         if: steps.creds.outputs.ready == 'true'
+        shell: bash
         run: |
+          set -euo pipefail
           PROJECT="${PAGES_PROJECT:-kingai-global-intelligence}"
+          echo "name=$PROJECT" >> "$GITHUB_OUTPUT"
           npx --yes wrangler@latest pages project list --json > /tmp/pages.json
-          if ! node -e "const p=require('/tmp/pages.json');process.exit((Array.isArray(p)?p:p.result||[]).some(x=>x.name===process.argv[1])?0:1)" "$PROJECT"; then
+          if ! node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('/tmp/pages.json','utf8'));const rows=Array.isArray(p)?p:(p.result||[]);process.exit(rows.some(x=>x.name===process.argv[1])?0:1)" "$PROJECT"; then
             npx --yes wrangler@latest pages project create "$PROJECT" --production-branch main
           fi
+
       - name: Deploy static site
+        id: deploy
         if: steps.creds.outputs.ready == 'true'
+        continue-on-error: true
+        shell: bash
         run: |
+          set -o pipefail
           PROJECT="${PAGES_PROJECT:-kingai-global-intelligence}"
-          npx --yes wrangler@latest pages deploy _site --project-name="$PROJECT" --branch=main --commit-hash="$GITHUB_SHA" --commit-message="${{ github.event.head_commit.message || 'KINGAI static deployment' }}"
+          set +e
+          npx --yes wrangler@latest pages deploy _site \
+            --project-name="$PROJECT" \
+            --branch=main \
+            --commit-hash="$GITHUB_SHA" \
+            --commit-message="${{ github.event.head_commit.message || 'KINGAI static deployment' }}" 2>&1 | tee /tmp/cloudflare-deploy.log
+          CODE=${PIPESTATUS[0]}
+          set -e
+          URL=$(grep -Eo 'https://[A-Za-z0-9.-]+\.pages\.dev' /tmp/cloudflare-deploy.log | tail -1 || true)
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+          echo "exit_code=$CODE" >> "$GITHUB_OUTPUT"
+          if [ "$CODE" -ne 0 ]; then exit "$CODE"; fi
+
+      - name: Bind or verify production custom domain
+        id: domain
+        if: steps.creds.outputs.ready == 'true' && steps.deploy.outcome == 'success'
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          PROJECT="${PAGES_PROJECT:-kingai-global-intelligence}"
+          DOMAIN="${PAGES_DOMAIN:-intel.kingai.work}"
+          API="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/${PROJECT}/domains"
+          AUTH="Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
+
+          curl -fsS -H "$AUTH" -H 'Content-Type: application/json' "$API" > /tmp/domains.json
+          if node -e "const fs=require('fs');const d=JSON.parse(fs.readFileSync('/tmp/domains.json','utf8'));process.exit((d.result||[]).some(x=>x.name===process.argv[1])?0:1)" "$DOMAIN"; then
+            echo "action=existing" >> "$GITHUB_OUTPUT"
+          else
+            curl -fsS -X POST -H "$AUTH" -H 'Content-Type: application/json' \
+              --data "{\"name\":\"${DOMAIN}\"}" "$API" > /tmp/domain-create.json
+            echo "action=created" >> "$GITHUB_OUTPUT"
+          fi
+
+          curl -fsS -H "$AUTH" -H 'Content-Type: application/json' "${API}/${DOMAIN}" > /tmp/domain.json
+          STATUS=$(node -e "const fs=require('fs');const d=JSON.parse(fs.readFileSync('/tmp/domain.json','utf8'));process.stdout.write(String(d.result?.status||'unknown'))")
+          echo "name=$DOMAIN" >> "$GITHUB_OUTPUT"
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+
+      - name: Record deployment status
+        if: always()
+        shell: bash
+        env:
+          CREDS_READY: ${{ steps.creds.outputs.ready }}
+          PROJECT_NAME: ${{ steps.project.outputs.name }}
+          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+          DEPLOY_URL: ${{ steps.deploy.outputs.url }}
+          DEPLOY_EXIT_CODE: ${{ steps.deploy.outputs.exit_code }}
+          DOMAIN_OUTCOME: ${{ steps.domain.outcome }}
+          DOMAIN_ACTION: ${{ steps.domain.outputs.action }}
+          DOMAIN_NAME: ${{ steps.domain.outputs.name }}
+          DOMAIN_STATUS: ${{ steps.domain.outputs.status }}
+        run: |
+          mkdir -p data
+          node <<'NODE'
+          const fs=require('fs');
+          const doc={
+            schema_version:'1.0.0',
+            generated_at:new Date().toISOString(),
+            environment:'production',
+            source_commit:process.env.GITHUB_SHA,
+            project:process.env.PROJECT_NAME||process.env.PAGES_PROJECT||'kingai-global-intelligence',
+            credentials_configured:process.env.CREDS_READY==='true',
+            deployment:{
+              outcome:process.env.DEPLOY_OUTCOME||'skipped',
+              exit_code:process.env.DEPLOY_EXIT_CODE?Number(process.env.DEPLOY_EXIT_CODE):null,
+              pages_url:process.env.DEPLOY_URL||null
+            },
+            custom_domain:{
+              name:process.env.DOMAIN_NAME||process.env.PAGES_DOMAIN||'intel.kingai.work',
+              action:process.env.DOMAIN_ACTION||null,
+              outcome:process.env.DOMAIN_OUTCOME||'skipped',
+              status:process.env.DOMAIN_STATUS||null
+            }
+          };
+          fs.writeFileSync('data/deployment-status.json',JSON.stringify(doc,null,2)+'\n');
+          NODE
+
+      - name: Commit deployment status
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "KINGAI Deployment Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/deployment-status.json
+          if git diff --cached --quiet; then
+            echo "Deployment status unchanged."
+          else
+            git commit -m "chore: record Cloudflare Pages deployment status [skip ci]"
+            git push origin HEAD:main
+          fi
+
+      - name: Fail when production deployment failed
+        if: steps.creds.outputs.ready != 'true' || steps.deploy.outcome != 'success'
+        shell: bash
+        run: |
+          echo "Production deployment did not succeed. See data/deployment-status.json."
+          exit 1
