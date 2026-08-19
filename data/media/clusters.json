@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": null,
+  "policy": {
+    "meaning": "Cross-source coverage only; not a truth score.",
+    "single_source": 1,
+    "corroborated_min_domains": 2,
+    "broadly_corroborated_min_domains": 4
+  },
+  "clusters": []
+}
