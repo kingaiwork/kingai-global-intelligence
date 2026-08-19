@@ -2,6 +2,14 @@
 
 Public, static-first frontend and published intelligence snapshots for the KINGAI global intelligence project.
 
+## Deployment
+
+- Canonical production target: https://intel.kingai.work/
+- Cloudflare Pages production mirror: https://os.kingai.work/global-intelligence/
+- Source of truth: this repository's `main` branch.
+
+The mirror is isolated under `/global-intelligence/` and does not replace the existing KINGAI OS `/intelligence/` product page. It loads the current public source snapshot while the dedicated `intel.kingai.work` Pages project remains separately deployable.
+
 ## Architecture
 
 This repository is intentionally public and contains only material safe for public release:
@@ -81,11 +89,11 @@ Generated public data is written under `data/`.
 
 `.github/workflows/static-site-check.yml` runs on pushes and pull requests. It checks required pages/assets, parses all public JSON/i18n documents and verifies basic HTML requirements before deployment.
 
-## Cloudflare Pages deployment
+## Dedicated Cloudflare Pages deployment
 
-`.github/workflows/deploy-cloudflare-pages.yml` can deploy the repository as a Direct Upload Cloudflare Pages site using Wrangler. It first builds a clean `_site` directory and excludes repository-only files.
+`.github/workflows/deploy-cloudflare-pages.yml` can deploy this repository as a Direct Upload Cloudflare Pages site using Wrangler. It builds a clean `_site` directory and excludes repository-only files.
 
-Configure these GitHub Actions secrets in this public repository:
+Required GitHub Actions secrets for the dedicated project:
 
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ACCOUNT_ID`
@@ -94,13 +102,11 @@ Optional repository variable:
 
 - `CLOUDFLARE_PAGES_PROJECT` — defaults to `kingai-global-intelligence` when omitted.
 
-When the two Cloudflare secrets are absent, the deployment workflow exits without pretending deployment succeeded. When present, it checks whether the Pages project exists, creates it when needed with `main` as production branch, then deploys the static output.
-
 The private core publication pipeline remains separate: it periodically generates validated public `data/` snapshots and can push them into this repository using its own restricted `PUBLIC_REPO_TOKEN`.
 
 ## Runtime model
 
-Production is intended to remain almost entirely static:
+Production remains static:
 
 `private collectors -> validate/normalize -> sanitized JSON -> public GitHub repository -> Cloudflare Pages CDN -> browser-side rendering`
 
