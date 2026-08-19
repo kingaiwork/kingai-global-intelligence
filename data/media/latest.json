@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-08-19T22:00:00.000Z",
+  "policy": {
+    "direct_score_weight_for_raw_media": 0,
+    "note": "Raw media, videos and public posts are evidence/discourse signals. They do not automatically change a country score."
+  },
+  "publisher_feeds": [],
+  "open_web": [],
+  "public_social": [],
+  "event_linked_sources": [],
+  "videos": [],
+  "status": {
+    "seed": "awaiting-first-core-media-publication"
+  }
+}
