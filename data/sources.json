@@ -1,14 +1,16 @@
 {
-  "schema_version": "1.1.0",
-  "generated_at": "2026-08-19T21:45:00.000Z",
-  "sources": [
+  "schema_version":"1.2.0",
+  "generated_at":"2026-08-19T21:55:00.000Z",
+  "sources":[
     {"id":"mledoze-countries","name":"mledoze/countries","category":"country-metadata","url":"https://github.com/mledoze/countries","enabled":true,"status":"active","cadence":"daily","license":"ODbL-1.0","public_attribution":true},
     {"id":"worldbank-wdi","name":"World Bank Indicators API","category":"development-governance-context","url":"https://api.worldbank.org/v2","enabled":true,"status":"active","cadence":"daily","public_attribution":true},
     {"id":"gdacs","name":"Global Disaster Alert and Coordination System","category":"live-disaster-risk","url":"https://www.gdacs.org/contentdata/xml/gdacsAPP_Home.geojson","enabled":true,"status":"active","cadence":"hourly","public_attribution":true},
     {"id":"gdelt","name":"GDELT 2.0 Event Database","category":"global-news-events","url":"https://data.gdeltproject.org/gdeltv2/lastupdate.txt","enabled":true,"status":"active","cadence":"hourly","public_attribution":true},
     {"id":"gdelt-doc-2","name":"GDELT DOC 2.0 API","category":"open-web-public-discourse","url":"https://api.gdeltproject.org/api/v2/doc/doc","enabled":true,"status":"active","cadence":"hourly","public_attribution":true,"notes":"Unverified public-discourse signal; direct score weight 0."},
-    {"id":"bluesky-public-search","name":"Bluesky Public AppView Search","category":"public-social-discourse","url":"https://public.api.bsky.app/xrpc/app.bsky.feed.searchPosts","enabled":true,"status":"active","cadence":"hourly","public_attribution":true,"notes":"Public posts only; clipped, attributed, unverified and direct score weight 0."},
-    {"id":"ooni","name":"OONI Findings API","category":"internet-freedom-evidence","url":"https://backend-fsn.ooni.org/api/v1/aggregation/analysis","enabled":true,"status":"active","cadence":"hourly","public_attribution":true,"notes":"Network-interference evidence signal, not automatic attribution of censorship responsibility."},
+    {"id":"bluesky-public-search","name":"Bluesky AppView Public Search","category":"public-social-discourse","url":"https://api.bsky.app/xrpc/app.bsky.feed.searchPosts","enabled":true,"status":"active","cadence":"hourly","public_attribution":true,"notes":"Public posts only; clipped, attributed, unverified and direct score weight 0."},
+    {"id":"ooni","name":"OONI Findings and Measurements","category":"internet-censorship-measurement","url":"https://explorer.ooni.org/findings","enabled":true,"status":"active","cadence":"hourly","public_attribution":true},
+    {"id":"gfw-report","name":"GFW Report","category":"internet-censorship-technical-research","url":"https://gfw.report/","enabled":true,"status":"curated-technical-evidence","cadence":"monthly","public_attribution":true},
+    {"id":"greatfire-monitor","name":"GreatFire","category":"internet-censorship-monitoring","url":"https://en.greatfire.org/trends","enabled":true,"status":"curated-monitoring-evidence","cadence":"weekly","public_attribution":true},
     {"id":"freedom-house-fitw","name":"Freedom House — Freedom in the World","category":"political-rights-civil-liberties","url":"https://freedomhouse.org/report/freedom-world","enabled":true,"status":"curated-attributed-assessment","cadence":"annual","public_attribution":true},
     {"id":"freedom-house-fotn","name":"Freedom House — Freedom on the Net","category":"internet-freedom","url":"https://freedomhouse.org/report/freedom-net","enabled":true,"status":"curated-attributed-assessment","cadence":"annual","public_attribution":true},
     {"id":"rsf","name":"Reporters Without Borders World Press Freedom Index","category":"press-freedom","url":"https://rsf.org/en/index","enabled":true,"status":"curated-attributed-assessment","cadence":"annual","public_attribution":true},
@@ -20,7 +22,5 @@
     {"id":"hrmi","name":"Human Rights Measurement Initiative","category":"human-rights","url":"https://humanrightsmeasurement.org/dataset-download/","enabled":false,"status":"commercial-reuse-permission-review-required","public_attribution":true},
     {"id":"ohchr-upr","name":"OHCHR Universal Periodic Review","category":"human-rights-evidence","url":"https://www.ohchr.org/en/hr-bodies/upr/upr-home","enabled":false,"status":"evidence-adapter-pending","public_attribution":true}
   ],
-  "runtime": {
-    "note": "The private core replaces this seed registry with live runtime source status during scheduled publication."
-  }
+  "runtime":{"note":"The private core replaces this seed registry with live runtime source status during scheduled publication."}
 }
