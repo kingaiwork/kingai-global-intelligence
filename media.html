@@ -42,9 +42,18 @@
     </section>
 
     <section class="panel">
-      <div class="section-head">
-        <div><div class="eyebrow" data-i18n="media_clusters_eyebrow">Cross-source analysis</div><h2 data-i18n="media_clusters_title">Stories reported by multiple sources</h2></div>
+      <div class="section-head"><div><div class="eyebrow" data-i18n="media_coverage_eyebrow">Coverage & pipeline health</div><h2 data-i18n="media_coverage_title">Know where the media layer is strong — and where it is thin.</h2></div></div>
+      <p class="legend" data-i18n="media_coverage_note">Coverage and collection health measure pipeline availability and breadth. They are not media reliability scores.</p>
+      <div class="status-grid media-coverage-grid" aria-live="polite">
+        <article><span data-i18n="media_health">Collection health</span><strong id="media-health-state">—</strong><small data-i18n="media_health_note">collector availability</small></article>
+        <article><span data-i18n="media_country_gaps">Country gaps</span><strong id="media-country-gaps">—</strong><small data-i18n="media_country_gaps_note">thin or missing coverage</small></article>
+        <article><span data-i18n="media_languages_count">Languages</span><strong id="media-language-count">—</strong><small data-i18n="media_languages_note">observed or seeded</small></article>
+        <article><span data-i18n="media_domains_count">Discovered domains</span><strong id="media-domain-count">—</strong><small data-i18n="media_domains_note">live public coverage</small></article>
       </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><div><div class="eyebrow" data-i18n="media_clusters_eyebrow">Cross-source analysis</div><h2 data-i18n="media_clusters_title">Stories reported by multiple sources</h2></div></div>
       <p class="legend" data-i18n="media_clusters_note">Corroboration means multiple independent domains are reporting a similar event. It measures source breadth, not factual truth.</p>
       <div class="cluster-grid" id="media-clusters"><div class="loading" data-i18n="loading">Loading public snapshot…</div></div>
     </section>
