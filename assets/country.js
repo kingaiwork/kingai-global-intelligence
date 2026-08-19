@@ -1,5 +1,5 @@
 const SUPPORTED = ['en','zh-CN'];
-const state = {lang:'en', dict:{}, country:null, ranking:{}, ooni:null, events:[]};
+const state = {lang:'en', dict:{}, country:null, ranking:{}, ooni:null, events:[], assessments:[], discourse:{web:[],social:[]}};
 
 function detectLanguage(){
   const saved = localStorage.getItem('kingai-lang');
@@ -47,6 +47,11 @@ function number(value, options={}){
 function score(value){
   if (value === null || value === undefined || !Number.isFinite(Number(value))) return '—';
   return Math.max(0, Math.min(100, Number(value))).toFixed(0);
+}
+
+function dateText(value){
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? (value || '—') : new Intl.DateTimeFormat(locale(),{dateStyle:'medium'}).format(d);
 }
 
 async function applyTranslations(){
@@ -106,6 +111,54 @@ function safeURL(value){
   } catch { return null; }
 }
 
+function assessmentKind(item){
+  if (item.source_type === 'government-self-assessment') return {label:t('official_response','Official response / self-assessment'), cls:'official'};
+  if (item.source_type === 'intergovernmental-communication') return {label:t('un_communication','UN communication / concern'), cls:'un'};
+  return {label:t('external_assessment','External assessment'), cls:'external'};
+}
+
+function renderAssessments(){
+  const root = document.querySelector('#assessment-list');
+  if (!state.assessments.length) {
+    root.innerHTML = `<div class="empty-state">${escapeHTML(t('no_assessments','No attributed assessments in the current snapshot.'))}</div>`;
+    return;
+  }
+  root.innerHTML = state.assessments.map(item => {
+    const kind = assessmentKind(item);
+    const summary = state.lang === 'zh-CN' ? (item.summary_zh || item.summary_en) : (item.summary_en || item.summary_zh);
+    const url = safeURL(item.url);
+    const scoreText = Number.isFinite(Number(item.score)) && Number.isFinite(Number(item.score_max))
+      ? `${number(item.score,{maximumFractionDigits:2})}/${number(item.score_max)}${item.status ? ` · ${escapeHTML(item.status)}` : ''}`
+      : (Number.isFinite(Number(item.rank)) && Number.isFinite(Number(item.rank_total)) ? `#${number(item.rank)} / ${number(item.rank_total)}` : '');
+    const rankText = Number.isFinite(Number(item.rank)) && Number.isFinite(Number(item.rank_total)) && scoreText.includes('/') && Number.isFinite(Number(item.score))
+      ? ` · #${number(item.rank)}/${number(item.rank_total)}` : '';
+    return `<article class="assessment-card ${kind.cls}">
+      <div class="assessment-meta"><span class="evidence-badge ${kind.cls}">${escapeHTML(kind.label)}</span><span>${escapeHTML(item.period || '—')}</span></div>
+      <div class="assessment-head"><div><strong>${escapeHTML(item.publisher || '—')}</strong><small>${escapeHTML(item.topic || '')}</small></div>${scoreText ? `<div class="assessment-score">${scoreText}${rankText}</div>` : ''}</div>
+      <p>${escapeHTML(summary || '—')}</p>
+      ${url ? `<a class="source-link" href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(t('view_source','View source'))} ↗</a>` : ''}
+    </article>`;
+  }).join('');
+}
+
+function renderDiscourse(){
+  const webRoot = document.querySelector('#web-discourse');
+  const socialRoot = document.querySelector('#social-discourse');
+  const web = state.discourse?.web || [];
+  const social = state.discourse?.social || [];
+
+  webRoot.innerHTML = web.slice(0,20).map(item => {
+    const url = safeURL(item.url);
+    return `<article class="discourse-card"><div class="discourse-meta"><span class="evidence-badge unverified">${escapeHTML(t('unverified','Unverified'))}</span><span>${escapeHTML(item.domain || item.aggregator || 'Open web')}</span></div><strong>${escapeHTML(item.title || '—')}</strong><small>${escapeHTML(item.published_at || '')}</small>${url ? `<a class="source-link" href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(t('view_source','View source'))} ↗</a>` : ''}</article>`;
+  }).join('') || `<div class="empty-state">${escapeHTML(t('no_web_discourse','No matching open-web items in the current snapshot.'))}</div>`;
+
+  socialRoot.innerHTML = social.slice(0,20).map(item => {
+    const url = safeURL(item.url);
+    const author = item.author_handle ? `@${item.author_handle}` : (item.author_display_name || '—');
+    return `<article class="discourse-card"><div class="discourse-meta"><span class="evidence-badge unverified">${escapeHTML(t('unverified','Unverified'))}</span><span>${escapeHTML(author)}</span></div><p>${escapeHTML(item.text || '—')}</p><small>${escapeHTML(dateText(item.created_at))}</small>${url ? `<a class="source-link" href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(t('view_source','View source'))} ↗</a>` : ''}</article>`;
+  }).join('') || `<div class="empty-state">${escapeHTML(t('no_social_discourse','No matching public social posts in the current snapshot.'))}</div>`;
+}
+
 function renderEvents(){
   const rows = state.events.slice(0,30).map(e => {
     const source = e.source_id === 'gdelt' ? 'GDELT' : e.source_id === 'gdacs' ? 'GDACS' : (e.source_id || '—');
@@ -142,7 +195,9 @@ function render(){
   document.querySelector('#score-governance').textContent = score(state.ranking.governance);
   document.querySelector('#score-live-risk').textContent = score(state.ranking.live_risk);
   renderFacts();
+  renderAssessments();
   renderOoni();
+  renderDiscourse();
   renderEvents();
 }
 
@@ -156,17 +211,21 @@ async function setLanguage(lang){
 async function boot(){
   state.lang = detectLanguage();
   const code = (new URLSearchParams(location.search).get('c') || '').toUpperCase();
-  const [countriesDoc, rankingsDoc, internetDoc, eventsDoc] = await Promise.all([
+  const [countriesDoc, rankingsDoc, internetDoc, eventsDoc, assessmentsDoc, discourseDoc] = await Promise.all([
     loadJSON('/data/countries.json',{countries:[]}),
     loadJSON('/data/rankings.json',{countries:[]}),
     loadJSON('/data/internet/latest.json',{countries:[]}),
-    loadJSON('/data/events/latest.json',{events:[]})
+    loadJSON('/data/events/latest.json',{events:[]}),
+    loadJSON('/data/assessments/latest.json',{assessments:[]}),
+    loadJSON('/data/discourse/latest.json',{countries:[]})
   ]);
   const countries = countriesDoc.countries || [];
   state.country = countries.find(c => c.cca3 === code || c.cca2 === code) || null;
   if (state.country) {
     state.ranking = (rankingsDoc.countries || []).find(r => r.cca3 === state.country.cca3) || {};
     state.ooni = (internetDoc.countries || []).find(r => r.cca2 === state.country.cca2) || null;
+    state.assessments = (assessmentsDoc.assessments || []).filter(v => v.cca3 === state.country.cca3);
+    state.discourse = (discourseDoc.countries || []).find(v => v.cca3 === state.country.cca3) || {web:[],social:[]};
     const targetName = String(state.country.name_en || '').toLowerCase();
     state.events = (eventsDoc.events || []).filter(e => e.cca3 === state.country.cca3 || e.iso3 === state.country.cca3 || e.iso3 === state.country.cca2 || String(e.country || '').toLowerCase() === targetName);
   }
