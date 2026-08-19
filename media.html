@@ -6,7 +6,8 @@
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#07111f">
   <title>Global Media Intelligence — KINGAI</title>
-  <meta name="description" content="Global media, public-web, social, video and event-linked intelligence sources with transparent attribution and collection status.">
+  <meta name="description" content="Global media, public-web, social, video and event-linked intelligence sources with transparent attribution and cross-source corroboration.">
+  <link rel="canonical" href="https://intel.kingai.work/media.html">
   <link rel="stylesheet" href="/assets/styles.css">
   <link rel="stylesheet" href="/assets/media.css">
 </head>
@@ -42,6 +43,14 @@
 
     <section class="panel">
       <div class="section-head">
+        <div><div class="eyebrow" data-i18n="media_clusters_eyebrow">Cross-source analysis</div><h2 data-i18n="media_clusters_title">Stories reported by multiple sources</h2></div>
+      </div>
+      <p class="legend" data-i18n="media_clusters_note">Corroboration means multiple independent domains are reporting a similar event. It measures source breadth, not factual truth.</p>
+      <div class="cluster-grid" id="media-clusters"><div class="loading" data-i18n="loading">Loading public snapshot…</div></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
         <div><div class="eyebrow" data-i18n="media_stream">Media stream</div><h2 data-i18n="media_latest">Latest collected evidence</h2></div>
         <label class="search-wrap"><span class="sr-only" data-i18n="search">Search</span><input id="media-search" type="search" data-i18n-placeholder="media_search_placeholder" placeholder="Search title, publisher or platform"></label>
       </div>
@@ -55,6 +64,12 @@
         <button type="button" data-filter="video" data-i18n="media_video">Video</button>
       </div>
       <div class="media-grid" id="media-grid"><div class="loading" data-i18n="loading">Loading public snapshot…</div></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><div><div class="eyebrow" data-i18n="media_discovered_eyebrow">Automatic discovery</div><h2 data-i18n="media_discovered_title">Media domains found in live coverage</h2></div></div>
+      <p class="legend" data-i18n="media_discovered_note">New local, independent and specialist media domains are discovered automatically from public coverage. Discovery is not an endorsement.</p>
+      <div class="media-directory discovered-directory" id="discovered-directory"></div>
     </section>
 
     <section class="panel">
