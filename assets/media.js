@@ -14,7 +14,11 @@ function safeURL(v){try{const u=new URL(v);return /^https?:$/.test(u.protocol)?u
 function formatDate(v){if(!v)return '—';const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v);return new Intl.DateTimeFormat(state.lang==='zh-CN'?'zh-CN':'en-US',{dateStyle:'medium',timeStyle:'short'}).format(d)}
 
 async function applyTranslations(){
-  state.dict=await loadJSON(`/i18n/${state.lang}.json`,{});
+  const [base,page]=await Promise.all([
+    loadJSON(`/i18n/${state.lang}.json`,{}),
+    loadJSON(`/i18n/media-${state.lang}.json`,{})
+  ]);
+  state.dict={...base,...page};
   document.documentElement.lang=state.lang;
   document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(state.dict[k])el.textContent=state.dict[k]});
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{const k=el.dataset.i18nPlaceholder;if(state.dict[k])el.placeholder=state.dict[k]});
