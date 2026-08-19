@@ -1,14 +1,25 @@
 {
   "schema_version": "1.0.0",
   "methodology_version": "0.1.0",
-  "generated_at": null,
+  "generated_at": "2026-08-19T21:45:00.000Z",
   "publisher": "kingai-intelligence-core",
   "default_language": "en",
   "supported_languages": ["en", "zh-CN"],
+  "coverage_target": "global",
   "coverage": {
-    "countries_territories": 0,
+    "countries_territories": 1,
     "ranked_entities": 0,
-    "live_events": 0
+    "live_events": 0,
+    "rights_assessments": 7,
+    "rights_assessment_countries": 1,
+    "open_web_discourse_items": 0,
+    "public_social_discourse_items": 0,
+    "public_discourse_countries": 1
   },
-  "status": "awaiting-first-core-publication"
+  "evidence_policy": {
+    "public_discourse_direct_score_weight": 0,
+    "publisher_scores_remain_attributed": true,
+    "government_responses_separate": true
+  },
+  "status": "partial-seed-awaiting-full-core-publication"
 }
