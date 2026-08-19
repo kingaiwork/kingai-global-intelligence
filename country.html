@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#07111f">
   <title>Country Intelligence — KINGAI Global Intelligence</title>
-  <meta name="description" content="Evidence-linked country intelligence profile covering safety, wellbeing, rights, expression, governance, internet signals, external assessments, media evidence and recent events.">
+  <meta name="description" content="Evidence-linked country intelligence profile covering safety, wellbeing, rights, expression, governance, evidence coverage, internet signals, media evidence and recent events.">
   <link rel="stylesheet" href="/assets/styles.css">
 </head>
 <body>
@@ -31,6 +31,17 @@
     </section>
 
     <section class="panel"><div class="section-head"><div><div class="eyebrow" data-i18n="country_context">Country context</div><h2 data-i18n="country_facts">Public data snapshot</h2></div></div><div class="fact-grid" id="fact-grid"></div></section>
+
+    <section class="panel">
+      <div class="section-head"><div><div class="eyebrow" data-i18n="evidence_coverage">Evidence coverage</div><h2 data-i18n="evidence_coverage_title">How complete is the public evidence?</h2></div></div>
+      <p class="legend" data-i18n="evidence_coverage_note">This score measures evidence availability and source breadth only. It is not a score of country quality, truth, safety, freedom or human rights.</p>
+      <div class="status-grid evidence-confidence-grid">
+        <article><span data-i18n="evidence_coverage_score">Coverage score</span><strong id="confidence-score">—</strong><small data-i18n="score_100">0–100 score</small></article>
+        <article><span data-i18n="evidence_coverage_label">Coverage level</span><strong id="confidence-label">—</strong><small data-i18n="evidence_coverage_label_note">availability, not truth</small></article>
+        <article><span data-i18n="evidence_source_classes">Evidence classes</span><strong id="confidence-source-classes">—</strong><small data-i18n="evidence_source_classes_note">active evidence categories</small></article>
+      </div>
+      <div class="fact-grid" id="confidence-components"></div>
+    </section>
 
     <section class="panel"><div class="section-head"><div><div class="eyebrow" data-i18n="rights_evidence">Freedom & human-rights evidence</div><h2 data-i18n="external_assessments">External assessments and responses</h2></div></div><p class="legend" data-i18n="assessment_disclaimer">Publisher scores and reports are attributed to their original sources. Government responses are shown separately. KINGAI does not turn one source into a factual verdict.</p><div class="assessment-list" id="assessment-list"></div></section>
 
