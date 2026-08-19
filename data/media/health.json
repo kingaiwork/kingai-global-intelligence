@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": null,
+  "overall": "inactive",
+  "summary": {
+    "active_checks": 0,
+    "degraded_checks": 0,
+    "healthy_zero_record_checks": 0,
+    "configured_collectors": 0,
+    "inactive_collectors": 0
+  },
+  "note": "Collection health describes pipeline availability, not source reliability or truthfulness.",
+  "feeds": [],
+  "global_queries": [],
+  "optional": [],
+  "collectors": []
+}
