@@ -1,0 +1,45 @@
+name: Validate static site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check required files
+        run: |
+          set -e
+          for f in index.html country.html media.html compare.html methodology.html sources.html 404.html robots.txt sitemap.xml manifest.webmanifest sw.js llms.txt assets/styles.css assets/app.js data/countries.json data/rankings.json data/confidence.json; do
+            test -f "$f" || { echo "Missing $f"; exit 1; }
+          done
+      - name: Validate JSON
+        run: |
+          python3 - <<'PY'
+          import json, pathlib
+          files=list(pathlib.Path('data').rglob('*.json'))+list(pathlib.Path('i18n').rglob('*.json'))+[pathlib.Path('manifest.webmanifest')]
+          for p in files:
+              with p.open(encoding='utf-8') as f: json.load(f)
+          print(f'Validated {len(files)} JSON documents')
+          PY
+      - name: Check HTML basics
+        run: |
+          python3 - <<'PY'
+          import pathlib,re
+          for p in pathlib.Path('.').glob('*.html'):
+              s=p.read_text(encoding='utf-8')
+              assert 'name="viewport"' in s or "name='viewport'" in s, f'missing viewport: {p}'
+              assert '<title>' in s, f'missing title: {p}'
+          print('HTML basics OK')
+          PY
+      - name: Show static footprint
+        run: du -sh . && find . -type f | wc -l
