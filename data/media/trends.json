@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": null,
+  "summary": {
+    "items_6h": 0,
+    "items_24h": 0,
+    "corroborated_clusters": 0,
+    "broadly_corroborated_clusters": 0,
+    "clusters_with_syndication_risk": 0
+  },
+  "topic_trends": [],
+  "diversity": {
+    "items_24h": 0,
+    "independent_domains_24h": 0,
+    "languages_24h": 0,
+    "source_countries_24h": 0,
+    "ownership_types_24h": 0,
+    "top_5_domain_share_pct": 0,
+    "concentration_label": "insufficient-data"
+  },
+  "languages": [],
+  "source_countries": [],
+  "ownership": [],
+  "top_domains": [],
+  "narrative_by_language": []
+}
