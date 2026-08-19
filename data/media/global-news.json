@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-08-19T22:00:00.000Z",
+  "window": "2d",
+  "classification": "unverified-global-media-discovery",
+  "direct_score_weight": 0,
+  "items": [],
+  "status": [{"state":"awaiting-first-core-media-publication"}]
+}
