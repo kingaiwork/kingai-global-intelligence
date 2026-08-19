@@ -1,0 +1,58 @@
+name: Deploy Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate deploy credentials
+        id: creds
+        run: |
+          if [ -n "$CLOUDFLARE_API_TOKEN" ] && [ -n "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "Cloudflare credentials are not configured; deployment is skipped."
+          fi
+      - name: Prepare static output
+        if: steps.creds.outputs.ready == 'true'
+        run: |
+          mkdir -p _site
+          rsync -a ./ _site/ \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude '_site' \
+            --exclude 'README.md'
+      - name: Setup Node
+        if: steps.creds.outputs.ready == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Ensure Pages project exists
+        if: steps.creds.outputs.ready == 'true'
+        run: |
+          PROJECT="${PAGES_PROJECT:-kingai-global-intelligence}"
+          npx --yes wrangler@latest pages project list --json > /tmp/pages.json
+          if ! node -e "const p=require('/tmp/pages.json');process.exit((Array.isArray(p)?p:p.result||[]).some(x=>x.name===process.argv[1])?0:1)" "$PROJECT"; then
+            npx --yes wrangler@latest pages project create "$PROJECT" --production-branch main
+          fi
+      - name: Deploy static site
+        if: steps.creds.outputs.ready == 'true'
+        run: |
+          PROJECT="${PAGES_PROJECT:-kingai-global-intelligence}"
+          npx --yes wrangler@latest pages deploy _site --project-name="$PROJECT" --branch=main --commit-hash="$GITHUB_SHA" --commit-message="${{ github.event.head_commit.message || 'KINGAI static deployment' }}"
