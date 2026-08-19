@@ -1,0 +1,12 @@
+{
+  "name": "KINGAI Global Intelligence",
+  "short_name": "KINGAI Intel",
+  "description": "Static global risk, freedom, wellbeing and media intelligence with transparent evidence.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "lang": "en",
+  "categories": ["news", "education", "utilities"]
+}
