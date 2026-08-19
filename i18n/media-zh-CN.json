@@ -29,5 +29,7 @@
   "media_weight_zero": "直接评分权重：0",
   "media_no_items": "当前快照没有匹配的媒体条目。",
   "media_active": "已启用",
-  "media_inactive": "未启用"
+  "media_inactive": "未启用",
+  "media_auto_discovered": "自动发现的开放网络媒体",
+  "media_items": "条"
 }
