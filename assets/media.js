@@ -1,5 +1,5 @@
 const SUPPORTED=['en','zh-CN'];
-const state={lang:'en',dict:{},latest:{},sources:{},manifest:{},globalNews:{items:[],domains:[]},filter:'all'};
+const state={lang:'en',dict:{},latest:{},sources:{},manifest:{},globalNews:{items:[],domains:[]},clusters:{clusters:[]},domainIndex:{discovered_domains:[]},filter:'all'};
 
 function detectLanguage(){
   const saved=localStorage.getItem('kingai-lang');
@@ -71,6 +71,21 @@ function renderStream(){
   }).join('');
   document.querySelector('#media-grid').innerHTML=html||`<div class="empty-state">${escapeHTML(t('media_no_items','No matching media items in this snapshot.'))}</div>`;
 }
+function corroborationLabel(value){
+  if(value==='broadly-corroborated')return t('media_broadly_corroborated','Broadly corroborated');
+  if(value==='corroborated')return t('media_corroborated','Corroborated');
+  return t('media_single_source','Single source');
+}
+function renderClusters(){
+  const rows=(state.clusters?.clusters||[]).filter(v=>Number(v.independent_domain_count||0)>=2).slice(0,24);
+  document.querySelector('#media-clusters').innerHTML=rows.map(cluster=>{
+    const sources=(cluster.items||[]).slice(0,6).map(item=>{
+      const u=safeURL(item.url);const label=escapeHTML(item.publisher||item.domain||'Source');
+      return u?`<a href="${escapeHTML(u)}" target="_blank" rel="noopener noreferrer">${label}</a>`:label;
+    }).join(' · ');
+    return `<article class="cluster-card ${escapeHTML(cluster.corroboration||'single-source')}"><div class="cluster-head"><span class="cluster-badge">${escapeHTML(corroborationLabel(cluster.corroboration))}</span><small>${escapeHTML(String(cluster.independent_domain_count||0))} ${escapeHTML(t('media_independent_domains','independent domains'))}</small></div><h3>${escapeHTML(cluster.representative_title||'—')}</h3><p>${escapeHTML(t('media_corroboration_not_truth','Source breadth is not a truth score.'))}</p><div class="cluster-sources">${sources||'—'}</div></article>`;
+  }).join('')||`<div class="empty-state">${escapeHTML(t('media_no_clusters','No multi-source clusters in this snapshot yet.'))}</div>`;
+}
 function renderStatus(){
   const c=state.manifest?.coverage||{};
   document.querySelector('#media-seed-count').textContent=Number(c.seed_outlets||state.sources?.seed_outlets?.length||0).toLocaleString();
@@ -80,35 +95,31 @@ function renderStatus(){
   document.querySelector('#media-item-count').textContent=total.toLocaleString();
 }
 function renderDirectory(){
-  const seed=(state.sources?.seed_outlets||[]).map(v=>({...v,dynamic:false}));
-  const dynamic=(state.globalNews?.domains||[]).map(v=>({
-    name:v.domain,
-    country:(v.source_countries||[]).join(', ')||'—',
-    languages:v.languages||[],
-    ownership:t('media_auto_discovered','Auto-discovered open web'),
-    collection:`${v.collection||'gdelt-doc-2'} · ${v.count||0} ${t('media_items','items')}`,
-    dynamic:true
-  }));
-  const seedNames=new Set(seed.map(v=>String(v.name||'').toLowerCase()));
-  const rows=[...seed,...dynamic.filter(v=>!seedNames.has(String(v.name||'').toLowerCase())).slice(0,180)];
-  document.querySelector('#media-directory').innerHTML=rows.map(v=>`<article class="directory-card${v.dynamic?' dynamic':''}"><div><strong>${escapeHTML(v.name)}</strong><small>${escapeHTML(v.country||'—')} · ${escapeHTML((v.languages||[]).join(', ')||'—')}</small></div><div><span>${escapeHTML(v.ownership||'—')}</span><small>${escapeHTML(v.collection||'—')}</small></div></article>`).join('')||`<div class="empty-state">${escapeHTML(t('data_unavailable','Data unavailable'))}</div>`;
+  const rows=(state.sources?.seed_outlets||[]).slice().sort((a,b)=>(a.country||'').localeCompare(b.country||'')||a.name.localeCompare(b.name));
+  document.querySelector('#media-directory').innerHTML=rows.map(v=>`<article class="directory-card"><div><strong>${escapeHTML(v.name)}</strong><small>${escapeHTML(v.country||'—')} · ${escapeHTML((v.languages||[]).join(', ')||'—')}</small></div><div><span>${escapeHTML(v.ownership||'—')}</span><small>${escapeHTML(v.collection||'—')}</small></div></article>`).join('')||`<div class="empty-state">${escapeHTML(t('data_unavailable','Data unavailable'))}</div>`;
+}
+function renderDiscovered(){
+  const rows=(state.domainIndex?.discovered_domains||[]).slice(0,180);
+  document.querySelector('#discovered-directory').innerHTML=rows.map(v=>`<article class="directory-card dynamic"><div><strong>${escapeHTML(v.domain)}</strong><small>${escapeHTML((v.source_countries||[]).join(', ')||'—')} · ${escapeHTML((v.languages||[]).join(', ')||'—')}</small></div><div><span>${escapeHTML(String(v.items||0))} ${escapeHTML(t('media_items','items'))}</span><small>${escapeHTML((v.media_kinds||[]).join(', ')||'—')}</small></div></article>`).join('')||`<div class="empty-state">${escapeHTML(t('media_no_discovered','No automatically discovered domains in this snapshot yet.'))}</div>`;
 }
 function renderPlatforms(){
   const rows=(state.sources?.collectors||[]).map(v=>`<tr><td>${escapeHTML(v.id)}</td><td>${escapeHTML(v.type||'—')}</td><td>${escapeHTML(v.auth||'none')}</td><td><span class="platform-state ${v.enabled?'on':'off'}">${escapeHTML(v.status||(v.enabled?t('media_active','Active'):t('media_inactive','Inactive')))}</span></td></tr>`).join('');
   document.querySelector('#platform-table').innerHTML=rows||`<tr><td colspan="4" class="loading">${escapeHTML(t('data_unavailable','Data unavailable'))}</td></tr>`;
 }
-function render(){renderStatus();renderStream();renderDirectory();renderPlatforms()}
+function render(){renderStatus();renderClusters();renderStream();renderDiscovered();renderDirectory();renderPlatforms()}
 async function setLanguage(lang){state.lang=SUPPORTED.includes(lang)?lang:'en';localStorage.setItem('kingai-lang',state.lang);await applyTranslations();render()}
 
 async function boot(){
   state.lang=detectLanguage();
-  const [latest,sources,manifest,globalNews]=await Promise.all([
+  const [latest,sources,manifest,globalNews,clusters,domainIndex]=await Promise.all([
     loadJSON('/data/media/latest.json',{publisher_feeds:[],open_web:[],public_social:[],event_linked_sources:[],videos:[]}),
     loadJSON('/data/media/sources.json',{collectors:[],seed_outlets:[]}),
     loadJSON('/data/media/manifest.json',{coverage:{}}),
-    loadJSON('/data/media/global-news.json',{items:[],domains:[]})
+    loadJSON('/data/media/global-news.json',{items:[],domains:[]}),
+    loadJSON('/data/media/clusters.json',{clusters:[]}),
+    loadJSON('/data/media/domain-index.json',{discovered_domains:[]})
   ]);
-  state.latest=latest;state.sources=sources;state.manifest=manifest;state.globalNews=globalNews;
+  state.latest=latest;state.sources=sources;state.manifest=manifest;state.globalNews=globalNews;state.clusters=clusters;state.domainIndex=domainIndex;
   await applyTranslations();render();
   document.querySelector('#media-search').addEventListener('input',renderStream);
   document.querySelectorAll('[data-filter]').forEach(btn=>btn.addEventListener('click',()=>{state.filter=btn.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===btn));renderStream()}));
