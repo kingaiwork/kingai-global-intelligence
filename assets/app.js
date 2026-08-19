@@ -1,0 +1,118 @@
+const SUPPORTED = ['en','zh-CN'];
+const state = { lang: 'en', countries: [], rankings: new Map(), manifest: {} };
+
+function detectLanguage(){
+  const saved = localStorage.getItem('kingai-lang');
+  if (SUPPORTED.includes(saved)) return saved;
+  const langs = navigator.languages?.length ? navigator.languages : [navigator.language || 'en'];
+  return langs.some(v => /^zh\b/i.test(v)) ? 'zh-CN' : 'en';
+}
+
+async function loadJSON(path, fallback){
+  try {
+    const res = await fetch(path, {cache:'no-store'});
+    if (!res.ok) throw new Error(`${res.status} ${path}`);
+    return await res.json();
+  } catch (err) {
+    console.warn(err);
+    return fallback;
+  }
+}
+
+function locale(){ return state.lang === 'zh-CN' ? 'zh-CN' : 'en-US'; }
+
+function localizedCountryName(country){
+  try {
+    const name = new Intl.DisplayNames([locale()], {type:'region'}).of(country.cca2);
+    if (name && name !== country.cca2) return name;
+  } catch {}
+  return state.lang === 'zh-CN' ? (country.name_zh || country.name_en) : country.name_en;
+}
+
+function localizedRegion(region){
+  const zh = {Africa:'非洲',Americas:'美洲',Asia:'亚洲',Europe:'欧洲',Oceania:'大洋洲',Antarctic:'南极洲'};
+  return state.lang === 'zh-CN' ? (zh[region] || region || '—') : (region || '—');
+}
+
+function scoreCell(value, invert=false){
+  if (value === null || value === undefined || Number.isNaN(Number(value))) return '<span class="muted">—</span>';
+  const n = Math.max(0, Math.min(100, Number(value)));
+  const title = invert ? `${n}/100 risk` : `${n}/100`;
+  return `<span title="${title}">${n.toFixed(0)}</span>`;
+}
+
+async function applyTranslations(){
+  const dict = await loadJSON(`/i18n/${state.lang}.json`, {});
+  document.documentElement.lang = state.lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (dict[key]) el.textContent = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (dict[key]) el.placeholder = dict[key];
+  });
+  document.querySelectorAll('[data-lang]').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === state.lang));
+  document.title = dict.page_title || 'KINGAI Global Intelligence';
+}
+
+function renderStatus(){
+  document.querySelector('#coverage-count').textContent = state.countries.length ? state.countries.length.toLocaleString(locale()) : '—';
+  document.querySelector('#last-update').textContent = state.manifest.generated_at ? new Intl.DateTimeFormat(locale(), {dateStyle:'medium', timeStyle:'short'}).format(new Date(state.manifest.generated_at)) : '—';
+  document.querySelector('#methodology-version').textContent = state.manifest.methodology_version || '—';
+}
+
+function renderTable(){
+  const q = document.querySelector('#country-search').value.trim().toLocaleLowerCase(locale());
+  const rows = state.countries
+    .map(c => ({...c, localizedName: localizedCountryName(c)}))
+    .filter(c => !q || c.localizedName.toLocaleLowerCase(locale()).includes(q) || c.name_en.toLowerCase().includes(q) || c.cca2.toLowerCase().includes(q) || c.cca3.toLowerCase().includes(q))
+    .sort((a,b) => a.localizedName.localeCompare(b.localizedName, locale()))
+    .map(c => {
+      const s = state.rankings.get(c.cca3) || {};
+      return `<tr>
+        <td><span class="country-name"><span class="flag">${c.flag || ''}</span>${escapeHTML(c.localizedName)}</span></td>
+        <td>${escapeHTML(localizedRegion(c.region))}</td>
+        <td>${scoreCell(s.safety)}</td>
+        <td>${scoreCell(s.wellbeing)}</td>
+        <td>${scoreCell(s.human_rights)}</td>
+        <td>${scoreCell(s.expression)}</td>
+        <td>${scoreCell(s.governance)}</td>
+        <td>${scoreCell(s.live_risk,true)}</td>
+      </tr>`;
+    }).join('');
+  const tbody = document.querySelector('#country-table-body');
+  tbody.innerHTML = rows || `<tr><td colspan="8" class="loading">${state.lang === 'zh-CN' ? '没有匹配的国家或地区。' : 'No matching countries or territories.'}</td></tr>`;
+}
+
+function escapeHTML(value=''){
+  return String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+}
+
+async function setLanguage(lang){
+  state.lang = SUPPORTED.includes(lang) ? lang : 'en';
+  localStorage.setItem('kingai-lang', state.lang);
+  await applyTranslations();
+  renderStatus();
+  renderTable();
+}
+
+async function boot(){
+  state.lang = detectLanguage();
+  const [manifest, countriesDoc, rankingsDoc] = await Promise.all([
+    loadJSON('/data/manifest.json', {}),
+    loadJSON('/data/countries.json', {countries:[]}),
+    loadJSON('/data/rankings.json', {countries:[]})
+  ]);
+  state.manifest = manifest;
+  state.countries = Array.isArray(countriesDoc) ? countriesDoc : (countriesDoc.countries || []);
+  const rankingRows = Array.isArray(rankingsDoc) ? rankingsDoc : (rankingsDoc.countries || []);
+  state.rankings = new Map(rankingRows.map(r => [r.cca3, r]));
+  await applyTranslations();
+  renderStatus();
+  renderTable();
+  document.querySelector('#country-search').addEventListener('input', renderTable);
+  document.querySelectorAll('[data-lang]').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
+}
+
+boot();
