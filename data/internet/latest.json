@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": null,
+  "window_days": 7,
+  "interpretation": "OONI anomalies and confirmed findings are evidence signals; they are not by themselves a finding about government responsibility.",
+  "countries": [],
+  "source_status": {}
+}
