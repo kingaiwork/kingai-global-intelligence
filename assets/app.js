@@ -71,7 +71,7 @@ function renderTable(){
     .map(c => {
       const s = state.rankings.get(c.cca3) || {};
       return `<tr>
-        <td><span class="country-name"><span class="flag">${c.flag || ''}</span>${escapeHTML(c.localizedName)}</span></td>
+        <td><a class="country-name" href="/country.html?c=${encodeURIComponent(c.cca3)}"><span class="flag">${c.flag || ''}</span>${escapeHTML(c.localizedName)}</a></td>
         <td>${escapeHTML(localizedRegion(c.region))}</td>
         <td>${scoreCell(s.safety)}</td>
         <td>${scoreCell(s.wellbeing)}</td>
