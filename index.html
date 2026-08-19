@@ -8,12 +8,14 @@
   <title>KINGAI Global Intelligence — Global Risk, Freedom & Wellbeing</title>
   <meta name="description" content="A transparent, evidence-linked global intelligence index covering safety, wellbeing, human rights, freedom of expression, governance, live risk and evidence coverage.">
   <link rel="canonical" href="https://intel.kingai.work/">
+  <link rel="manifest" href="/manifest.webmanifest">
   <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="stylesheet" href="/assets/home.css">
 </head>
 <body>
   <header class="topbar">
     <a class="brand" href="/" aria-label="KINGAI Global Intelligence home"><span class="brand-mark">K</span><span><strong>KINGAI</strong><small data-i18n="brand_subtitle">Global Intelligence</small></span></a>
-    <nav class="nav" aria-label="Primary"><a href="#world" data-i18n="nav_world">World</a><a href="#ranking" data-i18n="nav_ranking">Ranking</a><a href="/media.html" data-i18n="nav_media">Media</a><a href="#methodology" data-i18n="nav_methodology">Methodology</a></nav>
+    <nav class="nav" aria-label="Primary"><a href="#world" data-i18n="nav_world">World</a><a href="#ranking" data-i18n="nav_ranking">Ranking</a><a href="/compare.html">Compare</a><a href="/media.html" data-i18n="nav_media">Media</a><a href="/methodology.html" data-i18n="nav_methodology">Methodology</a><a href="/sources.html">Sources</a></nav>
     <div class="language-switch" aria-label="Language"><button type="button" data-lang="en">EN</button><button type="button" data-lang="zh-CN">中文</button></div>
   </header>
 
@@ -22,11 +24,32 @@
       <div class="eyebrow" data-i18n="eyebrow">Open-source global intelligence</div>
       <h1 data-i18n="hero_title">Understand global risk, freedom and wellbeing.</h1>
       <p data-i18n="hero_text">Country-level evidence, transparent methodology and continuously published static data — without hiding uncertainty.</p>
-      <div class="hero-actions"><a class="primary" href="#ranking" data-i18n="explore_ranking">Explore world ranking</a><a class="secondary" href="/media.html" data-i18n="nav_media">Media</a><a class="secondary" href="#methodology" data-i18n="see_methodology">See methodology</a></div>
+      <div class="hero-actions"><a class="primary" href="#ranking" data-i18n="explore_ranking">Explore world ranking</a><a class="secondary" href="/compare.html">Compare</a><a class="secondary" href="/media.html" data-i18n="nav_media">Media</a><a class="secondary" href="/methodology.html" data-i18n="see_methodology">See methodology</a></div>
       <div class="status-grid" aria-live="polite">
         <article><span data-i18n="coverage">Coverage</span><strong id="coverage-count">—</strong><small data-i18n="countries_territories">countries & territories</small></article>
         <article><span data-i18n="last_update">Last update</span><strong id="last-update">—</strong><small data-i18n="static_snapshot">static snapshot</small></article>
         <article><span data-i18n="methodology_version">Methodology</span><strong id="methodology-version">—</strong><small data-i18n="versioned_scoring">versioned scoring</small></article>
+      </div>
+    </section>
+
+    <section class="home-modules">
+      <div data-lang-panel="en">
+        <div class="section-head"><div><div class="eyebrow">Explore the intelligence system</div><h2>More than a ranking.</h2></div></div>
+        <div class="module-grid">
+          <a class="module-card" href="/compare.html"><span>Compare</span><strong>Country vs country</strong><p>Compare safety, wellbeing, human rights, expression, governance, live risk and evidence coverage under the same framework.</p></a>
+          <a class="module-card" href="/media.html"><span>Media intelligence</span><strong>Global trend radar</strong><p>Track multilingual coverage, source diversity, cross-source clusters, syndication risk and pipeline health.</p></a>
+          <a class="module-card" href="/methodology.html"><span>Methodology</span><strong>How the system decides</strong><p>See why raw posts do not directly change country scores, how missing data is handled and how evidence classes remain separate.</p></a>
+          <a class="module-card" href="/sources.html"><span>Sources</span><strong>Follow the evidence</strong><p>Understand the role of technical measurements, institutional datasets, media, public discourse and official responses.</p></a>
+        </div>
+      </div>
+      <div data-lang-panel="zh-CN" hidden>
+        <div class="section-head"><div><div class="eyebrow">探索情报系统</div><h2>不只是一个排行榜。</h2></div></div>
+        <div class="module-grid">
+          <a class="module-card" href="/compare.html"><span>国家对比</span><strong>两个国家同规则比较</strong><p>同时比较安全、幸福、人权、言论自由、治理、实时危情与证据覆盖。</p></a>
+          <a class="module-card" href="/media.html"><span>媒体情报</span><strong>全球趋势雷达</strong><p>查看多语言报道、来源多样性、多源聚类、转载风险和采集健康。</p></a>
+          <a class="module-card" href="/methodology.html"><span>方法论</span><strong>系统如何形成结论</strong><p>了解为什么原始网帖不直接改变国家评分、缺失数据如何处理，以及证据类别如何分离。</p></a>
+          <a class="module-card" href="/sources.html"><span>来源</span><strong>沿着证据链查看</strong><p>理解技术测量、机构数据、媒体、公开舆论和官方回应在系统中的不同角色。</p></a>
+        </div>
       </div>
     </section>
 
@@ -36,15 +59,21 @@
       <div class="table-wrap"><table><thead><tr><th data-i18n="country">Country</th><th data-i18n="region">Region</th><th data-i18n="safety">Safety</th><th data-i18n="wellbeing">Wellbeing</th><th data-i18n="human_rights">Human rights</th><th data-i18n="expression">Expression</th><th data-i18n="governance">Governance</th><th data-i18n="live_risk">Live risk</th><th data-i18n="evidence_coverage">Evidence coverage</th></tr></thead><tbody id="country-table-body"><tr><td colspan="9" class="loading" data-i18n="loading">Loading public snapshot…</td></tr></tbody></table></div>
     </section>
 
+    <section class="home-modules">
+      <div data-lang-panel="en"><div class="eyebrow">How to read KINGAI</div><h2>Score, evidence and uncertainty are separate.</h2><div class="read-grid"><article><strong>Structural score</strong><p>Longer-term country conditions based on versioned indicators and defined components.</p></article><article><strong>Live risk</strong><p>Fast-moving crisis signals such as conflict, unrest and disasters. Higher means more immediate risk.</p></article><article><strong>Evidence coverage</strong><p>How complete the public evidence is. A low coverage score means greater caution, not a better country result.</p></article></div></div><div data-lang-panel="zh-CN" hidden><div class="eyebrow">如何阅读 KINGAI</div><h2>评分、证据和不确定性分别展示。</h2><div class="read-grid"><article><strong>结构评分</strong><p>根据版本化指标和明确组成部分观察长期国家状况。</p></article><article><strong>实时危情</strong><p>战争、骚乱、灾害等快速变化风险，数值越高代表即时风险越高。</p></article><article><strong>证据覆盖</strong><p>表示当前公开证据完整程度。覆盖低意味着需要更谨慎，而不是国家表现更好。</p></article></div></div>
+    </section>
+
     <section class="methodology" id="methodology">
       <div class="eyebrow" data-i18n="transparent_by_design">Transparent by design</div>
       <h2 data-i18n="methodology_title">Evidence before opinion.</h2>
       <p data-i18n="methodology_text">AI may classify, summarize and compare evidence, but measured country scores come from versioned rules and attributable datasets. The same core rules apply to every country.</p>
       <div class="principles"><article><strong data-i18n="principle_1_title">No invented scores</strong><p data-i18n="principle_1_text">Unknown data stays unknown instead of being guessed.</p></article><article><strong data-i18n="principle_2_title">Source provenance</strong><p data-i18n="principle_2_text">Every public metric can carry source, date and methodology metadata.</p></article><article><strong data-i18n="principle_3_title">Equal rules</strong><p data-i18n="principle_3_text">China, the United States and every other country are evaluated under the same core framework.</p></article></div>
+      <div class="hero-actions"><a class="secondary" href="/methodology.html">Full methodology</a><a class="secondary" href="/sources.html">Source registry</a></div>
     </section>
   </main>
 
   <footer><span>© KINGAI Global Intelligence</span><span data-i18n="footer_note">Public static intelligence snapshots. Verify critical decisions against primary sources.</span></footer>
   <script type="module" src="/assets/app.js"></script>
+  <script src="/assets/static-pages.js"></script>
 </body>
 </html>
