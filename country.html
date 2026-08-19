@@ -6,35 +6,20 @@
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#07111f">
   <title>Country Intelligence — KINGAI Global Intelligence</title>
-  <meta name="description" content="Evidence-linked country intelligence profile covering safety, wellbeing, rights, expression, governance, internet signals, external assessments, public discourse and recent events.">
+  <meta name="description" content="Evidence-linked country intelligence profile covering safety, wellbeing, rights, expression, governance, internet signals, external assessments, media evidence and recent events.">
   <link rel="stylesheet" href="/assets/styles.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/" aria-label="KINGAI Global Intelligence home">
-      <span class="brand-mark">K</span>
-      <span><strong>KINGAI</strong><small data-i18n="brand_subtitle">Global Intelligence</small></span>
-    </a>
-    <nav class="nav" aria-label="Primary">
-      <a href="/#ranking" data-i18n="back_ranking">World ranking</a>
-      <a href="/#methodology" data-i18n="nav_methodology">Methodology</a>
-    </nav>
-    <div class="language-switch" aria-label="Language">
-      <button type="button" data-lang="en">EN</button>
-      <button type="button" data-lang="zh-CN">中文</button>
-    </div>
+    <a class="brand" href="/" aria-label="KINGAI Global Intelligence home"><span class="brand-mark">K</span><span><strong>KINGAI</strong><small data-i18n="brand_subtitle">Global Intelligence</small></span></a>
+    <nav class="nav" aria-label="Primary"><a href="/#ranking" data-i18n="back_ranking">World ranking</a><a href="/media.html" data-i18n="nav_media">Media</a><a href="/#methodology" data-i18n="nav_methodology">Methodology</a></nav>
+    <div class="language-switch" aria-label="Language"><button type="button" data-lang="en">EN</button><button type="button" data-lang="zh-CN">中文</button></div>
   </header>
 
   <main id="country-root">
     <section class="hero country-hero">
       <div class="eyebrow" data-i18n="country_intelligence">Country intelligence profile</div>
-      <div class="country-title-row">
-        <span id="country-flag" class="country-flag"></span>
-        <div>
-          <h1 id="country-name">—</h1>
-          <p id="country-subtitle">—</p>
-        </div>
-      </div>
+      <div class="country-title-row"><span id="country-flag" class="country-flag"></span><div><h1 id="country-name">—</h1><p id="country-subtitle">—</p></div></div>
       <div class="status-grid score-grid">
         <article><span data-i18n="safety">Safety</span><strong id="score-safety">—</strong><small data-i18n="score_100">0–100 score</small></article>
         <article><span data-i18n="wellbeing">Wellbeing</span><strong id="score-wellbeing">—</strong><small data-i18n="score_100">0–100 score</small></article>
@@ -45,54 +30,29 @@
       </div>
     </section>
 
-    <section class="panel">
-      <div class="section-head"><div><div class="eyebrow" data-i18n="country_context">Country context</div><h2 data-i18n="country_facts">Public data snapshot</h2></div></div>
-      <div class="fact-grid" id="fact-grid"></div>
-    </section>
+    <section class="panel"><div class="section-head"><div><div class="eyebrow" data-i18n="country_context">Country context</div><h2 data-i18n="country_facts">Public data snapshot</h2></div></div><div class="fact-grid" id="fact-grid"></div></section>
+
+    <section class="panel"><div class="section-head"><div><div class="eyebrow" data-i18n="rights_evidence">Freedom & human-rights evidence</div><h2 data-i18n="external_assessments">External assessments and responses</h2></div></div><p class="legend" data-i18n="assessment_disclaimer">Publisher scores and reports are attributed to their original sources. Government responses are shown separately. KINGAI does not turn one source into a factual verdict.</p><div class="assessment-list" id="assessment-list"></div></section>
+
+    <section class="panel"><div class="section-head"><div><div class="eyebrow" data-i18n="internet_evidence">Internet evidence</div><h2 data-i18n="network_signals">OONI network signals</h2></div></div><p class="legend" data-i18n="ooni_disclaimer">Anomalies are investigation signals, not automatic proof of censorship or government responsibility.</p><div class="status-grid" id="ooni-grid"></div></section>
+
+    <section class="panel"><div class="section-head"><div><div class="eyebrow" data-i18n="public_discourse">Public web & social discourse</div><h2 data-i18n="web_social_signals">Open-web and social signals</h2></div></div><p class="legend" data-i18n="discourse_disclaimer">These items are unverified public discourse. They may be false, coordinated, satirical or advocacy-driven and have direct score weight 0.</p><div class="discourse-columns"><div><h3 data-i18n="open_web">Open web</h3><div class="discourse-list" id="web-discourse"></div></div><div><h3 data-i18n="public_social">Public social posts</h3><div class="discourse-list" id="social-discourse"></div></div></div></section>
 
     <section class="panel">
-      <div class="section-head"><div><div class="eyebrow" data-i18n="rights_evidence">Freedom & human-rights evidence</div><h2 data-i18n="external_assessments">External assessments and responses</h2></div></div>
-      <p class="legend" data-i18n="assessment_disclaimer">Publisher scores and reports are attributed to their original sources. Government responses are shown separately. KINGAI does not turn one source into a factual verdict.</p>
-      <div class="assessment-list" id="assessment-list"></div>
-    </section>
-
-    <section class="panel">
-      <div class="section-head"><div><div class="eyebrow" data-i18n="internet_evidence">Internet evidence</div><h2 data-i18n="network_signals">OONI network signals</h2></div></div>
-      <p class="legend" data-i18n="ooni_disclaimer">Anomalies are investigation signals, not automatic proof of censorship or government responsibility.</p>
-      <div class="status-grid" id="ooni-grid"></div>
-    </section>
-
-    <section class="panel">
-      <div class="section-head"><div><div class="eyebrow" data-i18n="public_discourse">Public web & social discourse</div><h2 data-i18n="web_social_signals">Open-web and social signals</h2></div></div>
-      <p class="legend" data-i18n="discourse_disclaimer">These items are unverified public discourse. They may be false, coordinated, satirical or advocacy-driven and have direct score weight 0.</p>
-      <div class="discourse-columns">
-        <div>
-          <h3 data-i18n="open_web">Open web</h3>
-          <div class="discourse-list" id="web-discourse"></div>
-        </div>
-        <div>
-          <h3 data-i18n="public_social">Public social posts</h3>
-          <div class="discourse-list" id="social-discourse"></div>
-        </div>
+      <div class="section-head"><div><div class="eyebrow" data-i18n="country_media_evidence">Country-linked media evidence</div><h2 data-i18n="country_media_title">Explicitly linked media coverage</h2></div></div>
+      <p class="legend" data-i18n="country_media_note">Only media items with an explicit country link are included here. Publisher nationality alone is never used to infer the country being discussed.</p>
+      <div class="status-grid country-media-status">
+        <article><span data-i18n="country_media_items">Media items</span><strong id="country-media-items">—</strong><small data-i18n="country_media_items_note">explicit country link</small></article>
+        <article><span data-i18n="country_media_domains">Independent domains</span><strong id="country-media-domains">—</strong><small data-i18n="country_media_domains_note">source breadth</small></article>
+        <article><span data-i18n="country_media_languages">Languages</span><strong id="country-media-languages">—</strong><small data-i18n="country_media_languages_note">observed languages</small></article>
       </div>
+      <div class="assessment-list" id="country-media-list"></div>
     </section>
 
-    <section class="panel country-events">
-      <div class="section-head"><div><div class="eyebrow" data-i18n="live_evidence">Live evidence</div><h2 data-i18n="recent_events">Recent events</h2></div></div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th data-i18n="source">Source</th><th data-i18n="event">Event</th><th data-i18n="location">Location</th><th data-i18n="signal">Signal</th></tr></thead>
-          <tbody id="event-table"><tr><td colspan="4" class="loading" data-i18n="loading">Loading public snapshot…</td></tr></tbody>
-        </table>
-      </div>
-    </section>
+    <section class="panel country-events"><div class="section-head"><div><div class="eyebrow" data-i18n="live_evidence">Live evidence</div><h2 data-i18n="recent_events">Recent events</h2></div></div><div class="table-wrap"><table><thead><tr><th data-i18n="source">Source</th><th data-i18n="event">Event</th><th data-i18n="location">Location</th><th data-i18n="signal">Signal</th></tr></thead><tbody id="event-table"><tr><td colspan="4" class="loading" data-i18n="loading">Loading public snapshot…</td></tr></tbody></table></div></section>
   </main>
 
-  <footer>
-    <span>© KINGAI Global Intelligence</span>
-    <span data-i18n="footer_note">Public static intelligence snapshots. Verify critical decisions against primary sources.</span>
-  </footer>
-
+  <footer><span>© KINGAI Global Intelligence</span><span data-i18n="footer_note">Public static intelligence snapshots. Verify critical decisions against primary sources.</span></footer>
   <script type="module" src="/assets/country.js"></script>
 </body>
 </html>
