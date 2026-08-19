@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": null,
+  "policy": {
+    "purpose": "Detect geographic and language coverage gaps; coverage is not a source quality score."
+  },
+  "summary": {
+    "countries_territories": 0,
+    "broad": 0,
+    "moderate": 0,
+    "thin": 0,
+    "gaps": 0,
+    "languages": 0
+  },
+  "countries": [],
+  "languages": []
+}
