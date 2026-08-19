@@ -1,5 +1,5 @@
 const SUPPORTED=['en','zh-CN'];
-const state={lang:'en',dict:{},latest:{},sources:{},manifest:{},filter:'all'};
+const state={lang:'en',dict:{},latest:{},sources:{},manifest:{},globalNews:{items:[]},filter:'all'};
 
 function detectLanguage(){
   const saved=localStorage.getItem('kingai-lang');
@@ -28,13 +28,20 @@ async function applyTranslations(){
 
 function allItems(){
   const l=state.latest||{};
-  return [
+  const source=[
     ...(l.publisher_feeds||[]),
+    ...(state.globalNews?.items||[]),
     ...(l.open_web||[]),
     ...(l.public_social||[]),
     ...(l.event_linked_sources||[]),
     ...(l.videos||[])
   ];
+  const seen=new Set();
+  return source.filter(item=>{
+    const key=item.url||`${item.media_kind}:${item.title||item.text||item.event_id||''}`;
+    if(seen.has(key))return false;
+    seen.add(key);return true;
+  });
 }
 function kindLabel(k){
   const map={
@@ -52,14 +59,14 @@ function itemDate(item){return item.published_at||item.created_at||item.collecte
 function renderStream(){
   const q=document.querySelector('#media-search').value.trim().toLowerCase();
   let items=allItems().filter(v=>state.filter==='all'||v.media_kind===state.filter);
-  if(q)items=items.filter(v=>`${itemTitle(v)} ${itemPublisher(v)} ${v.platform||''} ${v.domain||''} ${v.cca3||''}`.toLowerCase().includes(q));
+  if(q)items=items.filter(v=>`${itemTitle(v)} ${itemPublisher(v)} ${v.platform||''} ${v.domain||''} ${v.cca3||''} ${v.source_country||''}`.toLowerCase().includes(q));
   items.sort((a,b)=>new Date(itemDate(b)||0)-new Date(itemDate(a)||0));
   const html=items.slice(0,240).map(item=>{
     const url=safeURL(item.url);
     const title=escapeHTML(itemTitle(item));
     const pub=escapeHTML(itemPublisher(item));
     const summary=escapeHTML(item.summary||item.text||item.location||'');
-    const meta=[kindLabel(item.media_kind),pub,item.cca3||item.publisher_country||'',formatDate(itemDate(item))].filter(Boolean).join(' · ');
+    const meta=[kindLabel(item.media_kind),pub,item.cca3||item.publisher_country||item.source_country||'',formatDate(itemDate(item))].filter(Boolean).join(' · ');
     return `<article class="media-card"><div class="media-card-meta"><span class="evidence-badge unverified">${escapeHTML(kindLabel(item.media_kind))}</span><small>${escapeHTML(meta)}</small></div><h3>${url?`<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">${title}</a>`:title}</h3>${summary?`<p>${summary}</p>`:''}<div class="media-card-foot"><span>${escapeHTML(pub)}</span><span>${escapeHTML(t('media_weight_zero','Direct score weight: 0'))}</span></div></article>`;
   }).join('');
   document.querySelector('#media-grid').innerHTML=html||`<div class="empty-state">${escapeHTML(t('media_no_items','No matching media items in this snapshot.'))}</div>`;
@@ -68,7 +75,8 @@ function renderStatus(){
   const c=state.manifest?.coverage||{};
   document.querySelector('#media-seed-count').textContent=Number(c.seed_outlets||state.sources?.seed_outlets?.length||0).toLocaleString();
   document.querySelector('#media-collector-count').textContent=Number(c.collectors||state.sources?.collectors?.length||0).toLocaleString();
-  const total=['publisher_feed_items','open_web_items','public_social_items','event_linked_sources','video_items'].reduce((n,k)=>n+Number(c[k]||0),0);
+  const declared=['publisher_feed_items','open_web_items','public_social_items','event_linked_sources','video_items'].reduce((n,k)=>n+Number(c[k]||0),0);
+  const total=Math.max(declared,allItems().length);
   document.querySelector('#media-item-count').textContent=total.toLocaleString();
 }
 function renderDirectory(){
@@ -84,12 +92,13 @@ async function setLanguage(lang){state.lang=SUPPORTED.includes(lang)?lang:'en';l
 
 async function boot(){
   state.lang=detectLanguage();
-  const [latest,sources,manifest]=await Promise.all([
+  const [latest,sources,manifest,globalNews]=await Promise.all([
     loadJSON('/data/media/latest.json',{publisher_feeds:[],open_web:[],public_social:[],event_linked_sources:[],videos:[]}),
     loadJSON('/data/media/sources.json',{collectors:[],seed_outlets:[]}),
-    loadJSON('/data/media/manifest.json',{coverage:{}})
+    loadJSON('/data/media/manifest.json',{coverage:{}}),
+    loadJSON('/data/media/global-news.json',{items:[]})
   ]);
-  state.latest=latest;state.sources=sources;state.manifest=manifest;
+  state.latest=latest;state.sources=sources;state.manifest=manifest;state.globalNews=globalNews;
   await applyTranslations();render();
   document.querySelector('#media-search').addEventListener('input',renderStream);
   document.querySelectorAll('[data-filter]').forEach(btn=>btn.addEventListener('click',()=>{state.filter=btn.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===btn));renderStream()}));
