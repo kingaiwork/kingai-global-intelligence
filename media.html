@@ -6,27 +6,16 @@
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#07111f">
   <title>Global Media Intelligence — KINGAI</title>
-  <meta name="description" content="Global media, public-web, social, video and event-linked intelligence sources with transparent attribution and cross-source corroboration.">
+  <meta name="description" content="Global media, public-web, social, video and event-linked intelligence sources with transparent attribution, cross-source corroboration and trend analysis.">
   <link rel="canonical" href="https://intel.kingai.work/media.html">
   <link rel="stylesheet" href="/assets/styles.css">
   <link rel="stylesheet" href="/assets/media.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/" aria-label="KINGAI Global Intelligence home">
-      <span class="brand-mark">K</span>
-      <span><strong>KINGAI</strong><small data-i18n="brand_subtitle">Global Intelligence</small></span>
-    </a>
-    <nav class="nav" aria-label="Primary">
-      <a href="/" data-i18n="nav_world">World</a>
-      <a href="/#ranking" data-i18n="nav_ranking">Ranking</a>
-      <a href="/media.html" data-i18n="nav_media">Media</a>
-      <a href="/#methodology" data-i18n="nav_methodology">Methodology</a>
-    </nav>
-    <div class="language-switch" aria-label="Language">
-      <button type="button" data-lang="en">EN</button>
-      <button type="button" data-lang="zh-CN">中文</button>
-    </div>
+    <a class="brand" href="/" aria-label="KINGAI Global Intelligence home"><span class="brand-mark">K</span><span><strong>KINGAI</strong><small data-i18n="brand_subtitle">Global Intelligence</small></span></a>
+    <nav class="nav" aria-label="Primary"><a href="/" data-i18n="nav_world">World</a><a href="/#ranking" data-i18n="nav_ranking">Ranking</a><a href="/media.html" data-i18n="nav_media">Media</a><a href="/#methodology" data-i18n="nav_methodology">Methodology</a></nav>
+    <div class="language-switch" aria-label="Language"><button type="button" data-lang="en">EN</button><button type="button" data-lang="zh-CN">中文</button></div>
   </header>
 
   <main>
@@ -53,45 +42,36 @@
     </section>
 
     <section class="panel">
+      <div class="section-head"><div><div class="eyebrow" data-i18n="media_trends_eyebrow">Trend radar</div><h2 data-i18n="media_trends_title">What is accelerating across the media layer?</h2></div></div>
+      <p class="legend" data-i18n="media_trends_note">Trend signals compare recent publishing volume and source breadth. They do not determine whether a claim is true.</p>
+      <div class="status-grid media-trend-stats" aria-live="polite">
+        <article><span data-i18n="media_items_24h">Items / 24h</span><strong id="trend-items-24h">—</strong><small data-i18n="media_recent_window">recent window</small></article>
+        <article><span data-i18n="media_independent_domains_24h">Domains / 24h</span><strong id="trend-domains-24h">—</strong><small data-i18n="media_source_breadth">source breadth</small></article>
+        <article><span data-i18n="media_source_countries_24h">Source countries / 24h</span><strong id="trend-source-countries">—</strong><small data-i18n="media_geographic_breadth">publisher geography</small></article>
+        <article><span data-i18n="media_top5_share">Top-5 domain share</span><strong id="trend-top5-share">—</strong><small id="trend-concentration-label">—</small></article>
+      </div>
+      <div class="table-wrap trend-table-wrap"><table><thead><tr><th data-i18n="media_topic">Topic</th><th data-i18n="media_last_6h">Last 6h</th><th data-i18n="media_previous_6h">Previous 6h</th><th data-i18n="media_trend">Trend</th><th data-i18n="media_domains">Domains</th><th data-i18n="media_languages_count">Languages</th></tr></thead><tbody id="trend-table"><tr><td colspan="6" class="loading" data-i18n="loading">Loading public snapshot…</td></tr></tbody></table></div>
+      <div class="language-narrative-grid" id="language-narrative"></div>
+    </section>
+
+    <section class="panel">
       <div class="section-head"><div><div class="eyebrow" data-i18n="media_clusters_eyebrow">Cross-source analysis</div><h2 data-i18n="media_clusters_title">Stories reported by multiple sources</h2></div></div>
       <p class="legend" data-i18n="media_clusters_note">Corroboration means multiple independent domains are reporting a similar event. It measures source breadth, not factual truth.</p>
       <div class="cluster-grid" id="media-clusters"><div class="loading" data-i18n="loading">Loading public snapshot…</div></div>
     </section>
 
     <section class="panel">
-      <div class="section-head">
-        <div><div class="eyebrow" data-i18n="media_stream">Media stream</div><h2 data-i18n="media_latest">Latest collected evidence</h2></div>
-        <label class="search-wrap"><span class="sr-only" data-i18n="search">Search</span><input id="media-search" type="search" data-i18n-placeholder="media_search_placeholder" placeholder="Search title, publisher or platform"></label>
-      </div>
+      <div class="section-head"><div><div class="eyebrow" data-i18n="media_stream">Media stream</div><h2 data-i18n="media_latest">Latest collected evidence</h2></div><label class="search-wrap"><span class="sr-only" data-i18n="search">Search</span><input id="media-search" type="search" data-i18n-placeholder="media_search_placeholder" placeholder="Search title, publisher or platform"></label></div>
       <p class="legend" data-i18n="media_disclaimer">Raw media and public posts are evidence/discourse signals and have direct score weight 0. Verify important claims against primary sources.</p>
-      <div class="media-filters" id="media-filters">
-        <button type="button" data-filter="all" class="active" data-i18n="media_all">All</button>
-        <button type="button" data-filter="publisher-feed" data-i18n="media_publishers">Publisher feeds</button>
-        <button type="button" data-filter="open-web" data-i18n="open_web">Open web</button>
-        <button type="button" data-filter="public-social" data-i18n="public_social">Public social</button>
-        <button type="button" data-filter="event-linked-source" data-i18n="media_event_links">Event links</button>
-        <button type="button" data-filter="video" data-i18n="media_video">Video</button>
-      </div>
+      <div class="media-filters" id="media-filters"><button type="button" data-filter="all" class="active" data-i18n="media_all">All</button><button type="button" data-filter="publisher-feed" data-i18n="media_publishers">Publisher feeds</button><button type="button" data-filter="open-web" data-i18n="open_web">Open web</button><button type="button" data-filter="public-social" data-i18n="public_social">Public social</button><button type="button" data-filter="event-linked-source" data-i18n="media_event_links">Event links</button><button type="button" data-filter="video" data-i18n="media_video">Video</button></div>
       <div class="media-grid" id="media-grid"><div class="loading" data-i18n="loading">Loading public snapshot…</div></div>
     </section>
 
-    <section class="panel">
-      <div class="section-head"><div><div class="eyebrow" data-i18n="media_discovered_eyebrow">Automatic discovery</div><h2 data-i18n="media_discovered_title">Media domains found in live coverage</h2></div></div>
-      <p class="legend" data-i18n="media_discovered_note">New local, independent and specialist media domains are discovered automatically from public coverage. Discovery is not an endorsement.</p>
-      <div class="media-directory discovered-directory" id="discovered-directory"></div>
-    </section>
+    <section class="panel"><div class="section-head"><div><div class="eyebrow" data-i18n="media_discovered_eyebrow">Automatic discovery</div><h2 data-i18n="media_discovered_title">Media domains found in live coverage</h2></div></div><p class="legend" data-i18n="media_discovered_note">New local, independent and specialist media domains are discovered automatically from public coverage. Discovery is not an endorsement.</p><div class="media-directory discovered-directory" id="discovered-directory"></div></section>
 
-    <section class="panel">
-      <div class="section-head"><div><div class="eyebrow" data-i18n="media_sources">Source directory</div><h2 data-i18n="media_source_title">Global outlets and platform adapters</h2></div></div>
-      <p class="legend" data-i18n="media_source_note">The directory includes public, private, state-funded, state-owned, nonprofit and independent media. Ownership labels describe source context, not truthfulness.</p>
-      <div class="media-directory" id="media-directory"></div>
-    </section>
+    <section class="panel"><div class="section-head"><div><div class="eyebrow" data-i18n="media_sources">Source directory</div><h2 data-i18n="media_source_title">Global outlets and platform adapters</h2></div></div><p class="legend" data-i18n="media_source_note">The directory includes public, private, state-funded, state-owned, nonprofit and independent media. Ownership labels describe source context, not truthfulness.</p><div class="media-directory" id="media-directory"></div></section>
 
-    <section class="panel media-platform-panel">
-      <div class="section-head"><div><div class="eyebrow" data-i18n="media_platforms">Platforms</div><h2 data-i18n="media_platform_status">Collection availability</h2></div></div>
-      <p class="legend" data-i18n="media_platform_note">Platforms requiring API keys, user authorization or approved access remain disabled until authorized credentials are configured. KINGAI does not bypass access controls.</p>
-      <div class="table-wrap"><table><thead><tr><th data-i18n="source">Source</th><th data-i18n="media_type">Type</th><th data-i18n="media_auth">Access</th><th data-i18n="media_status">Status</th></tr></thead><tbody id="platform-table"><tr><td colspan="4" class="loading" data-i18n="loading">Loading public snapshot…</td></tr></tbody></table></div>
-    </section>
+    <section class="panel media-platform-panel"><div class="section-head"><div><div class="eyebrow" data-i18n="media_platforms">Platforms</div><h2 data-i18n="media_platform_status">Collection availability</h2></div></div><p class="legend" data-i18n="media_platform_note">Platforms requiring API keys, user authorization or approved access remain disabled until authorized credentials are configured. KINGAI does not bypass access controls.</p><div class="table-wrap"><table><thead><tr><th data-i18n="source">Source</th><th data-i18n="media_type">Type</th><th data-i18n="media_auth">Access</th><th data-i18n="media_status">Status</th></tr></thead><tbody id="platform-table"><tr><td colspan="4" class="loading" data-i18n="loading">Loading public snapshot…</td></tr></tbody></table></div></section>
   </main>
 
   <footer><span>© KINGAI Global Intelligence</span><span data-i18n="footer_note">Public static intelligence snapshots. Verify critical decisions against primary sources.</span></footer>
