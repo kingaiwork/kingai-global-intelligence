@@ -1,5 +1,5 @@
 const SUPPORTED=['en','zh-CN'];
-const state={lang:'en',dict:{},latest:{},sources:{},manifest:{},globalNews:{items:[]},filter:'all'};
+const state={lang:'en',dict:{},latest:{},sources:{},manifest:{},globalNews:{items:[],domains:[]},filter:'all'};
 
 function detectLanguage(){
   const saved=localStorage.getItem('kingai-lang');
@@ -80,8 +80,18 @@ function renderStatus(){
   document.querySelector('#media-item-count').textContent=total.toLocaleString();
 }
 function renderDirectory(){
-  const rows=(state.sources?.seed_outlets||[]).slice().sort((a,b)=>(a.country||'').localeCompare(b.country||'')||a.name.localeCompare(b.name));
-  document.querySelector('#media-directory').innerHTML=rows.map(v=>`<article class="directory-card"><div><strong>${escapeHTML(v.name)}</strong><small>${escapeHTML(v.country||'—')} · ${escapeHTML((v.languages||[]).join(', ')||'—')}</small></div><div><span>${escapeHTML(v.ownership||'—')}</span><small>${escapeHTML(v.collection||'—')}</small></div></article>`).join('')||`<div class="empty-state">${escapeHTML(t('data_unavailable','Data unavailable'))}</div>`;
+  const seed=(state.sources?.seed_outlets||[]).map(v=>({...v,dynamic:false}));
+  const dynamic=(state.globalNews?.domains||[]).map(v=>({
+    name:v.domain,
+    country:(v.source_countries||[]).join(', ')||'—',
+    languages:v.languages||[],
+    ownership:t('media_auto_discovered','Auto-discovered open web'),
+    collection:`${v.collection||'gdelt-doc-2'} · ${v.count||0} ${t('media_items','items')}`,
+    dynamic:true
+  }));
+  const seedNames=new Set(seed.map(v=>String(v.name||'').toLowerCase()));
+  const rows=[...seed,...dynamic.filter(v=>!seedNames.has(String(v.name||'').toLowerCase())).slice(0,180)];
+  document.querySelector('#media-directory').innerHTML=rows.map(v=>`<article class="directory-card${v.dynamic?' dynamic':''}"><div><strong>${escapeHTML(v.name)}</strong><small>${escapeHTML(v.country||'—')} · ${escapeHTML((v.languages||[]).join(', ')||'—')}</small></div><div><span>${escapeHTML(v.ownership||'—')}</span><small>${escapeHTML(v.collection||'—')}</small></div></article>`).join('')||`<div class="empty-state">${escapeHTML(t('data_unavailable','Data unavailable'))}</div>`;
 }
 function renderPlatforms(){
   const rows=(state.sources?.collectors||[]).map(v=>`<tr><td>${escapeHTML(v.id)}</td><td>${escapeHTML(v.type||'—')}</td><td>${escapeHTML(v.auth||'none')}</td><td><span class="platform-state ${v.enabled?'on':'off'}">${escapeHTML(v.status||(v.enabled?t('media_active','Active'):t('media_inactive','Inactive')))}</span></td></tr>`).join('');
@@ -96,7 +106,7 @@ async function boot(){
     loadJSON('/data/media/latest.json',{publisher_feeds:[],open_web:[],public_social:[],event_linked_sources:[],videos:[]}),
     loadJSON('/data/media/sources.json',{collectors:[],seed_outlets:[]}),
     loadJSON('/data/media/manifest.json',{coverage:{}}),
-    loadJSON('/data/media/global-news.json',{items:[]})
+    loadJSON('/data/media/global-news.json',{items:[],domains:[]})
   ]);
   state.latest=latest;state.sources=sources;state.manifest=manifest;state.globalNews=globalNews;
   await applyTranslations();render();
