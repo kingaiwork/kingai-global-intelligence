@@ -42,7 +42,11 @@ function scoreCell(value, invert=false){
 }
 
 async function applyTranslations(){
-  const dict = await loadJSON(`/i18n/${state.lang}.json`, {});
+  const [base,media] = await Promise.all([
+    loadJSON(`/i18n/${state.lang}.json`, {}),
+    loadJSON(`/i18n/media-${state.lang}.json`, {})
+  ]);
+  const dict = {...base,...media};
   document.documentElement.lang = state.lang;
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
