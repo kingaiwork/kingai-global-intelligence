@@ -1,6 +1,18 @@
 {
   "schema_version": "1.0.0",
   "methodology_version": "0.1.0",
-  "generated_at": null,
-  "countries": []
+  "generated_at": "2026-08-19T21:45:00.000Z",
+  "countries": [
+    {
+      "cca3": "CHN",
+      "safety": null,
+      "wellbeing": null,
+      "human_rights": null,
+      "expression": null,
+      "governance": null,
+      "live_risk": null,
+      "confidence": null,
+      "methodology_version": "0.1.0"
+    }
+  ]
 }
