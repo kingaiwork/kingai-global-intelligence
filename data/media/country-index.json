@@ -1,0 +1,9 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": null,
+  "policy": {
+    "meaning": "Only explicitly country-linked media evidence is included.",
+    "direct_score_weight": 0
+  },
+  "countries": []
+}
