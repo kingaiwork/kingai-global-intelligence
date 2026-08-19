@@ -9,9 +9,12 @@ This repository is intentionally public and contains only material safe for publ
 - static website UI
 - public country profiles and rankings
 - global media intelligence UI
-- public methodology and source provenance
+- country comparison
+- bilingual methodology and source registry
 - sanitized/generated JSON snapshots
 - English and Simplified Chinese localization assets
+- installable PWA/offline shell with network-first live-data caching
+- AI/search-engine readable `llms.txt`
 
 Private collectors, normalization logic, source adapters, scoring internals, unpublished evidence, credentials, automation and anti-abuse logic live in the private `kingai-intelligence-core` repository.
 
@@ -19,7 +22,11 @@ Private collectors, normalization logic, source adapters, scoring internals, unp
 
 - `/` — global country/territory ranking and evidence coverage
 - `/country.html?c=CHN` — country intelligence profile
+- `/compare.html` — compare any two countries under the same public snapshot
 - `/media.html` — global media intelligence, source discovery, trend radar and cross-source analysis
+- `/methodology.html` — full bilingual methodology
+- `/sources.html` — public source/evidence registry
+- `/llms.txt` — concise machine-readable site and data guide
 
 ## Language policy
 
@@ -70,11 +77,34 @@ Generated public data is written under `data/`.
 7. Evidence coverage confidence measures how much public evidence exists, not whether a country is good, free, safe or rights-respecting.
 8. All countries use the same source-class and scoring rules when adapters support them.
 
-## Deployment
+## Static-site validation
 
-Designed for GitHub + Cloudflare Pages with no runtime database and no required server-side API.
+`.github/workflows/static-site-check.yml` runs on pushes and pull requests. It checks required pages/assets, parses all public JSON/i18n documents and verifies basic HTML requirements before deployment.
 
-The private core repository periodically fetches and validates upstream datasets, generates sanitized static JSON, and publishes only approved outputs into this repository.
+## Cloudflare Pages deployment
+
+`.github/workflows/deploy-cloudflare-pages.yml` can deploy the repository as a Direct Upload Cloudflare Pages site using Wrangler. It first builds a clean `_site` directory and excludes repository-only files.
+
+Configure these GitHub Actions secrets in this public repository:
+
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+
+Optional repository variable:
+
+- `CLOUDFLARE_PAGES_PROJECT` — defaults to `kingai-global-intelligence` when omitted.
+
+When the two Cloudflare secrets are absent, the deployment workflow exits without pretending deployment succeeded. When present, it checks whether the Pages project exists, creates it when needed with `main` as production branch, then deploys the static output.
+
+The private core publication pipeline remains separate: it periodically generates validated public `data/` snapshots and can push them into this repository using its own restricted `PUBLIC_REPO_TOKEN`.
+
+## Runtime model
+
+Production is intended to remain almost entirely static:
+
+`private collectors -> validate/normalize -> sanitized JSON -> public GitHub repository -> Cloudflare Pages CDN -> browser-side rendering`
+
+No runtime database or mandatory server-side API is required for the public site.
 
 ## License and methodology
 
