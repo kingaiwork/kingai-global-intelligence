@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#07111f">
+  <title>Global Media Intelligence — KINGAI</title>
+  <meta name="description" content="Global media, public-web, social, video and event-linked intelligence sources with transparent attribution and collection status.">
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="KINGAI Global Intelligence home">
+      <span class="brand-mark">K</span>
+      <span><strong>KINGAI</strong><small data-i18n="brand_subtitle">Global Intelligence</small></span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      <a href="/" data-i18n="nav_world">World</a>
+      <a href="/#ranking" data-i18n="nav_ranking">Ranking</a>
+      <a href="/media.html" data-i18n="nav_media">Media</a>
+      <a href="/#methodology" data-i18n="nav_methodology">Methodology</a>
+    </nav>
+    <div class="language-switch" aria-label="Language">
+      <button type="button" data-lang="en">EN</button>
+      <button type="button" data-lang="zh-CN">中文</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero media-hero">
+      <div class="eyebrow" data-i18n="media_eyebrow">Global media intelligence layer</div>
+      <h1 data-i18n="media_title">One evidence layer for global media.</h1>
+      <p data-i18n="media_intro">Publisher feeds, global news discovery, public social posts, video and event-linked sources are normalized into static snapshots with attribution and explicit uncertainty.</p>
+      <div class="status-grid media-status" aria-live="polite">
+        <article><span data-i18n="media_seed_outlets">Seed outlets</span><strong id="media-seed-count">—</strong><small data-i18n="media_global_directory">global directory</small></article>
+        <article><span data-i18n="media_collectors">Collectors</span><strong id="media-collector-count">—</strong><small data-i18n="media_platform_adapters">platform adapters</small></article>
+        <article><span data-i18n="media_latest_items">Latest items</span><strong id="media-item-count">—</strong><small data-i18n="media_static_snapshot">static snapshot</small></article>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <div><div class="eyebrow" data-i18n="media_stream">Media stream</div><h2 data-i18n="media_latest">Latest collected evidence</h2></div>
+        <label class="search-wrap"><span class="sr-only" data-i18n="search">Search</span><input id="media-search" type="search" data-i18n-placeholder="media_search_placeholder" placeholder="Search title, publisher or platform"></label>
+      </div>
+      <p class="legend" data-i18n="media_disclaimer">Raw media and public posts are evidence/discourse signals and have direct score weight 0. Verify important claims against primary sources.</p>
+      <div class="media-filters" id="media-filters">
+        <button type="button" data-filter="all" class="active" data-i18n="media_all">All</button>
+        <button type="button" data-filter="publisher-feed" data-i18n="media_publishers">Publisher feeds</button>
+        <button type="button" data-filter="open-web" data-i18n="open_web">Open web</button>
+        <button type="button" data-filter="public-social" data-i18n="public_social">Public social</button>
+        <button type="button" data-filter="event-linked-source" data-i18n="media_event_links">Event links</button>
+        <button type="button" data-filter="video" data-i18n="media_video">Video</button>
+      </div>
+      <div class="media-grid" id="media-grid"><div class="loading" data-i18n="loading">Loading public snapshot…</div></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head"><div><div class="eyebrow" data-i18n="media_sources">Source directory</div><h2 data-i18n="media_source_title">Global outlets and platform adapters</h2></div></div>
+      <p class="legend" data-i18n="media_source_note">The directory includes public, private, state-funded, state-owned, nonprofit and independent media. Ownership labels describe source context, not truthfulness.</p>
+      <div class="media-directory" id="media-directory"></div>
+    </section>
+
+    <section class="panel media-platform-panel">
+      <div class="section-head"><div><div class="eyebrow" data-i18n="media_platforms">Platforms</div><h2 data-i18n="media_platform_status">Collection availability</h2></div></div>
+      <p class="legend" data-i18n="media_platform_note">Platforms requiring API keys, user authorization or approved access remain disabled until authorized credentials are configured. KINGAI does not bypass access controls.</p>
+      <div class="table-wrap"><table><thead><tr><th data-i18n="source">Source</th><th data-i18n="media_type">Type</th><th data-i18n="media_auth">Access</th><th data-i18n="media_status">Status</th></tr></thead><tbody id="platform-table"><tr><td colspan="4" class="loading" data-i18n="loading">Loading public snapshot…</td></tr></tbody></table></div>
+    </section>
+  </main>
+
+  <footer><span>© KINGAI Global Intelligence</span><span data-i18n="footer_note">Public static intelligence snapshots. Verify critical decisions against primary sources.</span></footer>
+  <script type="module" src="/assets/media.js"></script>
+</body>
+</html>
