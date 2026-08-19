@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-08-19T23:17:35.834Z",
+  "environment": "production",
+  "source_commit": "3c7982687bb7872fff25618bc2421489ad221570",
+  "project": "kingai-global-intelligence",
+  "credentials_configured": false,
+  "deployment": {
+    "outcome": "skipped",
+    "exit_code": null,
+    "pages_url": null
+  },
+  "custom_domain": {
+    "name": "intel.kingai.work",
+    "action": null,
+    "outcome": "skipped",
+    "status": null
+  }
+}
