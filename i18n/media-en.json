@@ -29,5 +29,7 @@
   "media_weight_zero": "Direct score weight: 0",
   "media_no_items": "No matching media items in this snapshot.",
   "media_active": "Active",
-  "media_inactive": "Inactive"
+  "media_inactive": "Inactive",
+  "media_auto_discovered": "Auto-discovered open web",
+  "media_items": "items"
 }
