@@ -1,5 +1,25 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": null,
-  "countries": []
+  "generated_at": "2026-08-19T21:45:00.000Z",
+  "countries": [
+    {
+      "cca2": "CN",
+      "cca3": "CHN",
+      "name_en": "China",
+      "official_name_en": "People's Republic of China",
+      "name_zh": "中国",
+      "official_name_zh": "中华人民共和国",
+      "region": "Asia",
+      "subregion": "Eastern Asia",
+      "capital": ["Beijing"],
+      "population": null,
+      "languages": [{"code":"zho","name":"Chinese"}],
+      "flag": "🇨🇳",
+      "latlng": [35,105],
+      "independent": true,
+      "un_member": true,
+      "source_ids": ["mledoze-countries"],
+      "context": {}
+    }
+  ]
 }
