@@ -5,6 +5,8 @@ node_modules
 wrangler.jsonc
 .assetsignore
 README.md
+package.json
+bun.lock
 .deploy-trigger
 data/deployment-status.json
 .DS_Store
