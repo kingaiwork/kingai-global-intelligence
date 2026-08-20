@@ -1,9 +1,9 @@
 {
   "schema_version": "2.0.0",
-  "generated_at": "2026-08-20T08:08:13.853Z",
+  "generated_at": "2026-08-20T08:47:35.503Z",
   "environment": "production",
   "platform": "cloudflare-pages",
-  "source_commit": "1ae82c4684f1d7da96ef9e04d3218c884c0c7a25",
+  "source_commit": "4be8c1f212dd8868164f7cd3d73ea093c1f4b878",
   "project": "kingai-global-intelligence",
   "credentials_configured": false,
   "deployment": {
