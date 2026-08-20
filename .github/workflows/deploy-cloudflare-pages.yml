@@ -1,15 +1,16 @@
-name: Deploy Cloudflare Pages
+name: Manual Cloudflare Pages Recovery Deploy
 
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - 'data/deployment-status.json'
   workflow_dispatch:
+    inputs:
+      recovery_reason:
+        description: 'Why the canonical Git-integrated deployment path needs manual recovery'
+        required: true
+        type: string
 
 concurrency:
-  group: kingai-cloudflare-pages-production
-  cancel-in-progress: true
+  group: kingai-global-intelligence-manual-recovery
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -25,54 +26,48 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout
+      - name: Checkout canonical public delivery source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Validate Cloudflare credentials
-        id: creds
+      - name: Require explicit recovery authority
         shell: bash
+        env:
+          RECOVERY_REASON: ${{ inputs.recovery_reason }}
         run: |
-          if [ -n "${CLOUDFLARE_API_TOKEN:-}" ] && [ -n "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
-            echo "ready=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "ready=false" >> "$GITHUB_OUTPUT"
-            echo "Cloudflare credentials are not configured for this repository."
-          fi
+          set -euo pipefail
+          test -n "${RECOVERY_REASON:-}" || { echo 'Manual recovery requires a reason.' >&2; exit 2; }
+          test -n "${CLOUDFLARE_API_TOKEN:-}" || { echo 'Missing CLOUDFLARE_API_TOKEN.' >&2; exit 2; }
+          test -n "${CLOUDFLARE_ACCOUNT_ID:-}" || { echo 'Missing CLOUDFLARE_ACCOUNT_ID.' >&2; exit 2; }
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Install pinned deployment tooling
-        run: npm install --no-audit --no-fund
-
-      - name: Build clean Pages output
-        run: npm run build
-
-      - name: Validate Pages payload
+      - name: Build and validate public payload
         shell: bash
         run: |
           set -euo pipefail
+          npm install --ignore-scripts --no-audit --no-fund
+          npm run build
           test -f dist/index.html
           test -f dist/404.html
           test -d dist/assets
           test -d dist/data
           test ! -e dist/.github
-          test ! -e dist/wrangler.jsonc
           test ! -e dist/README.md
+          test ! -e dist/scripts
+          ! grep -R -n -E -- 'kingai-intelligence-core|github_pat_|ghp_|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' dist
           python3 - <<'PY'
           import json
           from pathlib import Path
-          root=Path('dist')
-          for p in root.rglob('*.json'):
-              json.loads(p.read_text(encoding='utf-8'))
-          print('Pages payload validated')
+          for p in Path('dist/data').rglob('*.json'): json.loads(p.read_text(encoding='utf-8'))
+          print('Manual recovery payload validated')
           PY
 
-      - name: Ensure Pages project exists
+      - name: Ensure recovery Pages project exists
         id: project
-        if: steps.creds.outputs.ready == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -83,74 +78,48 @@ jobs:
             npx wrangler pages project create "$PROJECT" --production-branch main
           fi
 
-      - name: Deploy to Cloudflare Pages
+      - name: Direct-upload recovery payload
         id: deploy
-        if: steps.creds.outputs.ready == 'true'
-        continue-on-error: true
         shell: bash
         run: |
-          set -o pipefail
+          set -euo pipefail
           PROJECT="${PAGES_PROJECT:-kingai-global-intelligence}"
-          set +e
-          npx wrangler pages deploy dist \
-            --project-name="$PROJECT" \
-            --branch=main \
-            --commit-hash="$GITHUB_SHA" \
-            --commit-message="${{ github.event.head_commit.message || 'KINGAI Global Intelligence Pages deployment' }}" 2>&1 | tee /tmp/cloudflare-pages-deploy.log
-          CODE=${PIPESTATUS[0]}
-          set -e
-          URL=$(grep -Eo 'https://[A-Za-z0-9.-]+\.pages\.dev' /tmp/cloudflare-pages-deploy.log | tail -1 || true)
+          npx wrangler pages deploy dist --project-name="$PROJECT" --branch=main --commit-hash="$GITHUB_SHA" --commit-message="Manual recovery: ${{ inputs.recovery_reason }}" 2>&1 | tee /tmp/pages-recovery.log
+          URL="$(grep -Eo 'https://[A-Za-z0-9.-]+\.pages\.dev' /tmp/pages-recovery.log | tail -1 || true)"
           if [ -z "$URL" ]; then URL="https://${PROJECT}.pages.dev"; fi
           echo "url=$URL" >> "$GITHUB_OUTPUT"
-          echo "exit_code=$CODE" >> "$GITHUB_OUTPUT"
-          if [ "$CODE" -ne 0 ]; then exit "$CODE"; fi
 
-      - name: Record deployment status
+      - name: Verify canonical production domain
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            code="$(curl -L -sS -o /tmp/intel.html -w '%{http_code}' --connect-timeout 10 --max-time 25 https://intel.kingai.work/ || true)"
+            if [ "$code" = 200 ] && grep -Eqi 'KINGAI|Global Intelligence' /tmp/intel.html; then exit 0; fi
+            sleep 5
+          done
+          echo 'Canonical domain smoke failed after manual recovery.' >&2
+          exit 4
+
+      - name: Persist sanitized recovery evidence
         if: always()
         shell: bash
         env:
-          CREDS_READY: ${{ steps.creds.outputs.ready }}
-          PROJECT_NAME: ${{ steps.project.outputs.name }}
-          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+          RECOVERY_REASON: ${{ inputs.recovery_reason }}
           DEPLOY_URL: ${{ steps.deploy.outputs.url }}
-          DEPLOY_EXIT_CODE: ${{ steps.deploy.outputs.exit_code }}
         run: |
+          set -euo pipefail
           mkdir -p data
-          node <<'NODE'
-          const fs=require('fs');
-          const doc={
-            schema_version:'2.0.0',
-            generated_at:new Date().toISOString(),
-            environment:'production',
-            platform:'cloudflare-pages',
-            source_commit:process.env.GITHUB_SHA,
-            project:process.env.PROJECT_NAME||process.env.PAGES_PROJECT||'kingai-global-intelligence',
-            credentials_configured:process.env.CREDS_READY==='true',
-            deployment:{
-              outcome:process.env.DEPLOY_OUTCOME||'skipped',
-              exit_code:process.env.DEPLOY_EXIT_CODE?Number(process.env.DEPLOY_EXIT_CODE):null,
-              pages_url:process.env.DEPLOY_URL||null
-            },
-            custom_domain:{managed_by_workflow:false}
-          };
-          fs.writeFileSync('data/deployment-status.json',JSON.stringify(doc,null,2)+'\n');
-          NODE
-
-      - name: Commit deployment status
-        if: always()
-        shell: bash
-        run: |
-          git config user.name "KINGAI Deployment Bot"
-          git config user.email "actions@users.noreply.github.com"
+          python3 - <<'PY'
+          import json, os, datetime
+          doc={'schema_version':'3.0.0','generated_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'environment':'production','deployment_mode':'manual-direct-upload-recovery','canonical_delivery':'cloudflare-pages-git-integration','source_commit':os.environ.get('GITHUB_SHA'),'recovery_reason':os.environ.get('RECOVERY_REASON','')[:500],'pages_url':os.environ.get('DEPLOY_URL') or None,'canonical_domain':'https://intel.kingai.work/','workflow_run_id':os.environ.get('GITHUB_RUN_ID')}
+          open('data/deployment-status.json','w',encoding='utf-8').write(json.dumps(doc,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'KINGAI Deployment Bot'
+          git config user.email 'actions@users.noreply.github.com'
           git add data/deployment-status.json
           if ! git diff --cached --quiet; then
-            git commit -m "chore: record Cloudflare Pages deployment status [skip ci]"
+            git commit -m 'chore: record manual Pages recovery evidence [skip ci]'
+            git pull --rebase origin main
             git push origin HEAD:main
           fi
-
-      - name: Fail when Pages deployment did not succeed
-        if: steps.creds.outputs.ready != 'true' || steps.deploy.outcome != 'success'
-        shell: bash
-        run: |
-          echo "Cloudflare Pages deployment did not succeed. See data/deployment-status.json."
-          exit 1
