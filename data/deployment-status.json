@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-08-20T04:47:13.178Z",
+  "generated_at": "2026-08-20T07:30:47.412Z",
   "environment": "production",
-  "source_commit": "c405724d666cdf26c53ed805c8c97fe48db65ada",
+  "source_commit": "a6894da2e78220227f1ec9d87e308d30b053236f",
   "project": "kingai-global-intelligence",
   "credentials_configured": false,
   "deployment": {
