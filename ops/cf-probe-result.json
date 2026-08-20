@@ -1,0 +1,7 @@
+{
+  "checked_at": "2026-08-20T17:55:30.509114+00:00",
+  "secret_present": false,
+  "api_read_ok": false,
+  "pages_count": null,
+  "error": "repository-secret-missing"
+}
