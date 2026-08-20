@@ -1,8 +1,9 @@
 {
-  "schema_version": "1.0.0",
-  "generated_at": "2026-08-20T08:06:28.154Z",
+  "schema_version": "2.0.0",
+  "generated_at": "2026-08-20T08:07:23.003Z",
   "environment": "production",
-  "source_commit": "44a6f337f3162e76a887ddce00b1071ea127ce6b",
+  "platform": "cloudflare-pages",
+  "source_commit": "bcc6f312a3980a1e2d4c46b3a08c38af6a51bbeb",
   "project": "kingai-global-intelligence",
   "credentials_configured": false,
   "deployment": {
@@ -11,9 +12,6 @@
     "pages_url": null
   },
   "custom_domain": {
-    "name": "intel.kingai.work",
-    "action": null,
-    "outcome": "skipped",
-    "status": null
+    "managed_by_workflow": false
   }
 }
