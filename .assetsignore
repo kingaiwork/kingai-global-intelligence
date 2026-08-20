@@ -1,0 +1,10 @@
+.git
+.github
+node_modules
+.wrangler
+wrangler.jsonc
+.assetsignore
+README.md
+.deploy-trigger
+data/deployment-status.json
+.DS_Store
