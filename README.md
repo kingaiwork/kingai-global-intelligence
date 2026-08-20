@@ -6,10 +6,10 @@ Public, static-first frontend and published intelligence snapshots for KINGAI Gl
 
 - Canonical production site: https://intel.kingai.work/
 - Canonical source for the public delivery surface: this repository's `main` branch.
-- Preferred deployment path: Cloudflare Pages Git integration.
+- Preferred deployment path: Git-integrated static hosting.
 - Build command: `npm run build`
 - Build output directory: `dist`
-- A Direct Upload workflow exists only as an explicit disaster-recovery/fallback path.
+- Provider configuration and recovery deployment controllers live outside this public repository.
 
 The public site must remain independently deployable and must not require a VPS, a private runtime service, or access to unpublished intelligence data.
 
@@ -105,7 +105,7 @@ The repository validation workflow checks required pages/assets, parses all publ
 
 ## Deployment recovery
 
-The canonical production path is Git-backed static deployment from `main`. The Direct Upload workflow is intentionally manual-only and may be used for recovery when the normal Git-integrated provider path is unavailable. A successful commit or build is not production proof; the canonical domain must be smoke-tested after deployment.
+The canonical production path is Git-backed static deployment from `main`. Provider-specific recovery deployment is controlled outside this public repository so public source never becomes infrastructure authority. A successful commit or build is not production proof; the canonical domain must be smoke-tested after deployment.
 
 ## License and methodology
 
