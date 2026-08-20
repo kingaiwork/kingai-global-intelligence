@@ -1,2 +1,4 @@
-production deploy trigger: 2026-08-20T00:31:00-07:00
-reason: ui-responsive-wrangler-static-assets-404-and-pinned-cli
+production deploy trigger: 2026-08-20T01:04:00-07:00
+reason: cloudflare-pages-native-dist-deploy
+platform: cloudflare-pages
+bind-domain: false
