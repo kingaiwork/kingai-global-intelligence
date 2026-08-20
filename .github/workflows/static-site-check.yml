@@ -24,14 +24,18 @@ jobs:
           for f in index.html country.html media.html compare.html methodology.html sources.html 404.html robots.txt sitemap.xml manifest.webmanifest sw.js llms.txt assets/styles.css assets/app.js data/countries.json data/rankings.json data/confidence.json package.json scripts/build-pages.mjs; do
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
+          test ! -e wrangler.jsonc
+          test ! -e .deploy-trigger
+          test ! -e .github/workflows/deploy-cloudflare-pages.yml
+          test ! -e .github/workflows/cloudflare-dry-run.yml
 
       - name: Enforce public/private information boundary
         shell: bash
         run: |
           set -euo pipefail
-          ! grep -R -n -E --exclude-dir=.git --exclude='*.map' -- \
-            'kingai-intelligence-core|kingaiwork/[A-Za-z0-9_.-]*(core|private)|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|github_pat_[A-Za-z0-9_]+|ghp_[A-Za-z0-9]+' .
-          ! grep -R -n -E --exclude-dir=.git --exclude='*.md' --exclude='*.html' -- \
+          ! grep -R -n -E --exclude-dir=.git --exclude-dir=.github -- \
+            'kingaiwork/[A-Za-z0-9_.-]+|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|github_pat_[A-Za-z0-9_]+|ghp_[A-Za-z0-9]+' .
+          ! grep -R -n -E --exclude-dir=.git --exclude-dir=.github --exclude='*.md' --exclude='*.html' -- \
             '(API_KEY|SECRET_KEY|ACCESS_TOKEN|PRIVATE_KEY|DATABASE_URL|WORLD_SECRET)[[:space:]]*[:=][[:space:]]*["'"'][^"'"']+["'"']' .
           for forbidden in raw private unpublished internal collectors scoring adapters credentials secrets; do
             test ! -e "$forbidden" || { echo "Forbidden public path: $forbidden"; exit 3; }
@@ -53,9 +57,10 @@ jobs:
           print(f'Validated {len(files)} JSON documents and public HTML basics')
           PY
 
-      - name: Build clean provider payload
+      - name: Build clean provider-neutral payload
+        shell: bash
         run: |
-          npm install --ignore-scripts --no-audit --no-fund
+          set -euo pipefail
           npm run build
           test -f dist/index.html
           test -f dist/404.html
@@ -66,7 +71,7 @@ jobs:
           test ! -e dist/README.md
           test ! -e dist/scripts
           test ! -e dist/package.json
-          ! grep -R -n -E -- 'kingai-intelligence-core|github_pat_|ghp_|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' dist
+          ! grep -R -n -E -- 'kingaiwork/[A-Za-z0-9_.-]+|github_pat_|ghp_|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' dist
 
       - name: Show sanitized static footprint
         run: du -sh dist && find dist -type f | wc -l
