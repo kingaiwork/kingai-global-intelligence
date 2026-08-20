@@ -1,4 +1,4 @@
-name: Validate static site
+name: Validate public intelligence delivery
 
 on:
   push:
@@ -13,33 +13,60 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Check required files
+
+      - name: Check required public files
+        shell: bash
         run: |
-          set -e
-          for f in index.html country.html media.html compare.html methodology.html sources.html 404.html robots.txt sitemap.xml manifest.webmanifest sw.js llms.txt assets/styles.css assets/app.js data/countries.json data/rankings.json data/confidence.json; do
+          set -euo pipefail
+          for f in index.html country.html media.html compare.html methodology.html sources.html 404.html robots.txt sitemap.xml manifest.webmanifest sw.js llms.txt assets/styles.css assets/app.js data/countries.json data/rankings.json data/confidence.json package.json scripts/build-pages.mjs; do
             test -f "$f" || { echo "Missing $f"; exit 1; }
           done
-      - name: Validate JSON
+
+      - name: Enforce public/private information boundary
+        shell: bash
         run: |
+          set -euo pipefail
+          ! grep -R -n -E --exclude-dir=.git --exclude='*.map' -- \
+            'kingai-intelligence-core|kingaiwork/[A-Za-z0-9_.-]*(core|private)|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|github_pat_[A-Za-z0-9_]+|ghp_[A-Za-z0-9]+' .
+          ! grep -R -n -E --exclude-dir=.git --exclude='*.md' --exclude='*.html' -- \
+            '(API_KEY|SECRET_KEY|ACCESS_TOKEN|PRIVATE_KEY|DATABASE_URL|WORLD_SECRET)[[:space:]]*[:=][[:space:]]*["'"'][^"'"']+["'"']' .
+          for forbidden in raw private unpublished internal collectors scoring adapters credentials secrets; do
+            test ! -e "$forbidden" || { echo "Forbidden public path: $forbidden"; exit 3; }
+          done
+
+      - name: Validate JSON and HTML
+        shell: bash
+        run: |
+          set -euo pipefail
           python3 - <<'PY'
           import json, pathlib
           files=list(pathlib.Path('data').rglob('*.json'))+list(pathlib.Path('i18n').rglob('*.json'))+[pathlib.Path('manifest.webmanifest')]
           for p in files:
               with p.open(encoding='utf-8') as f: json.load(f)
-          print(f'Validated {len(files)} JSON documents')
-          PY
-      - name: Check HTML basics
-        run: |
-          python3 - <<'PY'
-          import pathlib,re
           for p in pathlib.Path('.').glob('*.html'):
               s=p.read_text(encoding='utf-8')
               assert 'name="viewport"' in s or "name='viewport'" in s, f'missing viewport: {p}'
               assert '<title>' in s, f'missing title: {p}'
-          print('HTML basics OK')
+          print(f'Validated {len(files)} JSON documents and public HTML basics')
           PY
-      - name: Show static footprint
-        run: du -sh . && find . -type f | wc -l
+
+      - name: Build clean provider payload
+        run: |
+          npm install --ignore-scripts --no-audit --no-fund
+          npm run build
+          test -f dist/index.html
+          test -f dist/404.html
+          test -d dist/assets
+          test -d dist/data
+          test ! -e dist/.git
+          test ! -e dist/.github
+          test ! -e dist/README.md
+          test ! -e dist/scripts
+          test ! -e dist/package.json
+          ! grep -R -n -E -- 'kingai-intelligence-core|github_pat_|ghp_|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' dist
+
+      - name: Show sanitized static footprint
+        run: du -sh dist && find dist -type f | wc -l
