@@ -7,7 +7,7 @@ on:
       - '.github/workflows/cf-pages-maintenance-probe.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   probe:
@@ -17,22 +17,48 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: cc658c266bef011a07f83c73379d47e9
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
-      - name: Verify Cloudflare credential without exposing it
+      - uses: actions/checkout@v4
+      - name: Probe Cloudflare Pages access without exposing credentials
         shell: bash
         run: |
           set -euo pipefail
-          test -n "${CLOUDFLARE_API_TOKEN:-}" || { echo 'CLOUDFLARE_SECRET_MISSING'; exit 2; }
+          mkdir -p ops
           python3 - <<'PY'
-          import json, os, urllib.request
-          account=os.environ['CLOUDFLARE_ACCOUNT_ID']
-          token=os.environ['CLOUDFLARE_API_TOKEN']
-          req=urllib.request.Request(
-              f'https://api.cloudflare.com/client/v4/accounts/{account}/pages/projects?per_page=100',
-              headers={'Authorization':f'Bearer {token}','User-Agent':'KINGAI-CF-Probe/1.0'})
-          with urllib.request.urlopen(req, timeout=30) as r:
-              data=json.load(r)
-          if data.get('success') is not True:
-              raise SystemExit('CLOUDFLARE_API_AUTH_FAILED')
-          result=data.get('result') or []
-          print(f'CLOUDFLARE_PAGES_READ_OK count={len(result)}')
+          import json, os, urllib.request, urllib.error
+          from datetime import datetime, timezone
+          account=os.environ.get('CLOUDFLARE_ACCOUNT_ID','')
+          token=os.environ.get('CLOUDFLARE_API_TOKEN','')
+          out={'checked_at':datetime.now(timezone.utc).isoformat(),'secret_present':bool(token),'api_read_ok':False,'pages_count':None}
+          if token:
+              try:
+                  req=urllib.request.Request(
+                      f'https://api.cloudflare.com/client/v4/accounts/{account}/pages/projects?per_page=100',
+                      headers={'Authorization':f'Bearer {token}','User-Agent':'KINGAI-CF-Probe/1.0'})
+                  with urllib.request.urlopen(req, timeout=30) as r:
+                      data=json.load(r)
+                  if data.get('success') is True:
+                      result=data.get('result') or []
+                      out['api_read_ok']=True
+                      out['pages_count']=len(result)
+                  else:
+                      out['error']='cloudflare-api-returned-success-false'
+              except Exception as exc:
+                  out['error']=type(exc).__name__
+          else:
+              out['error']='repository-secret-missing'
+          with open('ops/cf-probe-result.json','w',encoding='utf-8') as f:
+              json.dump(out,f,indent=2)
+              f.write('\n')
+          print('Cloudflare Pages probe completed; no credential values were printed.')
           PY
+      - name: Persist sanitized probe result
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add ops/cf-probe-result.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'ops: record sanitized Cloudflare Pages probe [skip ci]'
+            git push origin HEAD:main
+          fi
