@@ -1,0 +1,11 @@
+{
+  "name": "kingai-global-intelligence-site",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "wrangler": "4.124.0"
+  },
+  "scripts": {
+    "deploy": "wrangler deploy"
+  }
+}
