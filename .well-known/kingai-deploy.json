@@ -1,0 +1,9 @@
+{
+  "schema": "kingai.pages.release.v1",
+  "release_id": "warm-premium-ui-2026-08-20",
+  "site": "intel.kingai.work",
+  "source_branch": "main",
+  "source_commit": "491aa6265071e028672913cb8a0e5ae214ca615d",
+  "requested_release": "warm-premium-ui-fleet",
+  "verification_status": "pending-production-domain-proof"
+}
