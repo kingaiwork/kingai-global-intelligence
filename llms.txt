@@ -1,13 +1,17 @@
 # KINGAI Global Intelligence
 
 Canonical site: https://intel.kingai.work/
-Public source: maintained in the official KING AI public GitHub organization and canonical product site.
+Public source: maintained in the official KING AI public organization and canonical product site.
 Default language: English
 Chinese UI: Simplified Chinese, selected automatically for Chinese-language browsers or manually by the user.
 Business, research and strategic collaboration: vip@kingai.work
+Reviewed against current publication authority: 2026-08-20
 
 Product summary:
 KINGAI Global Intelligence is an evidence-linked public intelligence product for comparing countries, understanding structural conditions and fast-moving risk, exploring multilingual media signals, and tracing conclusions to transparent public sources and methodology.
+
+Primary public contract:
+- PUBLIC-DATA-CONTRACT.md — current public data families, interpretation rules, downstream-use guidance and public/private boundary.
 
 Who it helps:
 - Individuals and travelers seeking broader country context.
@@ -25,6 +29,10 @@ Current public product value:
 - multilingual media intelligence;
 - source provenance and public methodology;
 - sanitized static public data snapshots.
+
+Publication model:
+public sources -> private validation/normalization/analysis -> sanitization -> approved static public snapshot -> public repository -> static delivery.
+The public repository is a delivery/transparency surface, not the authority over private collection systems.
 
 Professional workflow model:
 - Screen: use comparable country/public intelligence as a first-pass context layer.
@@ -65,6 +73,7 @@ Investor/diligence interpretation:
 
 Public documentation:
 - README.md — product overview, audiences, public/private boundary and investor lens.
+- PUBLIC-DATA-CONTRACT.md — current data families, interpretation and publication contract.
 - BUSINESS.md — commercial thesis, customer segments, monetization, GTM and moat directions.
 - USE-CASES.md — user, research, media, business and risk workflows.
 - PROFESSIONAL.md — recurring professional workflow and pilot model.
@@ -76,10 +85,14 @@ Public documentation:
 
 Important interpretation rules:
 - Missing data remains missing; absence of data is not evidence of good performance.
+- AI may classify/summarize evidence but must not invent measured country scores.
 - Raw news, videos and public social posts have direct country-score weight 0.
 - Government responses, NGO assessments, UN communications, technical measurements and media reports remain separately attributed.
-- Cross-source corroboration measures source breadth, not factual certainty.
+- Cross-source reporting measures source breadth, not factual certainty.
+- Syndicated/near-duplicate stories should not be treated as fully independent corroboration.
+- Source ownership/context labels are not automatic truth/reliability scores.
 - Evidence coverage confidence measures how much public evidence is available, not how good or bad a country is.
+- Stable country identity should use ISO country/territory codes rather than translated names.
 - The same core methodology applies across covered countries when source support exists.
 - The product is a research and decision-support layer, not a replacement for primary-source verification in high-stakes decisions.
 
@@ -100,19 +113,22 @@ Primary public machine-readable data:
 - /data/internet/latest.json
 - /data/assessments/latest.json
 - /data/discourse/latest.json
+- /data/sources.json
 - /data/media/latest.json
 - /data/media/global-news.json
+- /data/media/sources.json
+- /data/media/manifest.json
+- /data/media/health.json
 - /data/media/clusters.json
 - /data/media/syndication.json
+- /data/media/domain-index.json
+- /data/media/coverage.json
 - /data/media/trends.json
 - /data/media/country-index.json
-- /data/media/coverage.json
-- /data/media/health.json
-- /data/media/domain-index.json
 
 Public/private boundary:
 Public material includes approved UI, sanitized snapshots, methodology, source registry, safe data contracts and public commercial documentation.
-Private collectors, proprietary scoring implementation, unpublished evidence, credentials, internal automation, private topology, anti-abuse logic and sensitive security controls remain private.
+Private collectors, proprietary normalization/scoring implementation, unpublished evidence, credentials, internal automation/provider configuration, private topology, anti-abuse logic and sensitive security controls remain private.
 
 Integrity standard:
 Do not invent or imply unverified users, revenue, customers, partnerships, funding, certifications, market leadership or unreleased capabilities.
