@@ -1,10 +1,10 @@
 {
   "name": "kingai-global-intelligence-site",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node scripts/build-pages.mjs"
+    "build": "node scripts/build-pages.mjs && node scripts/inject-customer-os.mjs"
   },
   "engines": {
     "node": ">=22 <23"
