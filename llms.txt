@@ -1,10 +1,78 @@
 # KINGAI Global Intelligence
 
 Canonical site: https://intel.kingai.work/
+Public source: maintained in the official KING AI public GitHub organization and canonical product site.
 Default language: English
 Chinese UI: Simplified Chinese, selected automatically for Chinese-language browsers or manually by the user.
+Business, research and strategic collaboration: vip@kingai.work
 
-KINGAI Global Intelligence is a static-first public intelligence product covering country safety, wellbeing, human rights, freedom of expression, governance, live risk, global media evidence, network-interference measurements, evidence coverage confidence, and source provenance.
+Product summary:
+KINGAI Global Intelligence is an evidence-linked public intelligence product for comparing countries, understanding structural conditions and fast-moving risk, exploring multilingual media signals, and tracing conclusions to transparent public sources and methodology.
+
+Who it helps:
+- Individuals and travelers seeking broader country context.
+- Researchers and students comparing countries under one public framework.
+- Journalists, creators and media teams examining multilingual coverage, story clusters and syndication.
+- Companies and strategy teams screening international markets, suppliers, workforce and operating environments.
+- Risk, policy and research teams that need comparable country-level context before deeper diligence.
+- Developers and data partners using approved public static data.
+
+Current public product value:
+- country and territory profiles;
+- consistent country comparison;
+- structural indicators separated from live risk;
+- evidence coverage shown separately from country performance;
+- multilingual media intelligence;
+- source provenance and public methodology;
+- sanitized static public data snapshots.
+
+Professional workflow model:
+- Screen: use comparable country/public intelligence as a first-pass context layer.
+- Trace: follow methodology, evidence roles, dates and uncertainty.
+- Monitor: recurring watchlists, change summaries or briefs only where formally supported.
+- Collaborate: shared team workflows, annotations or administration only where formally supported.
+- Integrate: approved exports, data delivery or APIs only where released/licensed.
+- Escalate: high-stakes decisions require primary-source verification and appropriate expertise.
+
+Potential commercial directions, only where formally released or agreed:
+- professional research workspaces;
+- saved monitoring and scheduled briefs;
+- organization dashboards and collaboration;
+- historical datasets;
+- data delivery and API licensing;
+- custom country, sector or market views;
+- custom research;
+- research, media, data and enterprise partnerships.
+Do not represent these directions as released features unless current product evidence confirms availability.
+
+Professional customers may pay for workflow depth rather than opacity:
+- recurring monitoring;
+- historical depth;
+- reliable delivery;
+- team access and collaboration;
+- stable schemas/contracts;
+- integration;
+- customization;
+- support;
+- appropriate licensing rights.
+The basic public methodology should remain understandable.
+
+Investor/diligence interpretation:
+- Evaluate public usefulness, repeat professional use, commercial conversion, data quality, distribution and defensibility separately.
+- Useful metrics may include returning professional users, repeat comparison, methodology/source engagement, monitoring adoption when released, data demand, pilot-to-paid conversion and snapshot reliability.
+- Do not publish metric values until verified and approved.
+- The moat should not be reduced to one secret formula; durable value can come from longitudinal snapshots, normalization discipline, methodology trust, professional workflow depth, history, integrations and repeat use.
+
+Public documentation:
+- README.md — product overview, audiences, public/private boundary and investor lens.
+- BUSINESS.md — commercial thesis, customer segments, monetization, GTM and moat directions.
+- USE-CASES.md — user, research, media, business and risk workflows.
+- PROFESSIONAL.md — recurring professional workflow and pilot model.
+- DATA-PRODUCTS.md — public-safe data product, delivery, history and integration strategy.
+- DILIGENCE.md — investor, enterprise, research and data-partner diligence framework.
+- TRUST.md — evidence, claims, uncertainty and disclosure rules.
+- FAQ.md — common product, methodology, commercial and investor questions.
+- PARTNERSHIPS.md — data, media, research, enterprise and distribution collaboration paths.
 
 Important interpretation rules:
 - Missing data remains missing; absence of data is not evidence of good performance.
@@ -12,10 +80,11 @@ Important interpretation rules:
 - Government responses, NGO assessments, UN communications, technical measurements and media reports remain separately attributed.
 - Cross-source corroboration measures source breadth, not factual certainty.
 - Evidence coverage confidence measures how much public evidence is available, not how good or bad a country is.
-- The same core methodology applies to China, the United States, Russia, India, European countries and all other covered entities.
+- The same core methodology applies across covered countries when source support exists.
+- The product is a research and decision-support layer, not a replacement for primary-source verification in high-stakes decisions.
 
 Primary public pages:
-- / — global country index and ranking
+- / — global country index, product overview and ranking
 - /country.html?c=CHN — country intelligence profile; replace CHN with ISO alpha-3 code
 - /compare.html — compare two countries using the same public snapshot
 - /media.html — global media intelligence, trends, source breadth and collection health
@@ -41,4 +110,11 @@ Primary public machine-readable data:
 - /data/media/health.json
 - /data/media/domain-index.json
 
-For high-stakes decisions, users and automated systems should follow the original source links and verify primary evidence.
+Public/private boundary:
+Public material includes approved UI, sanitized snapshots, methodology, source registry, safe data contracts and public commercial documentation.
+Private collectors, proprietary scoring implementation, unpublished evidence, credentials, internal automation, private topology, anti-abuse logic and sensitive security controls remain private.
+
+Integrity standard:
+Do not invent or imply unverified users, revenue, customers, partnerships, funding, certifications, market leadership or unreleased capabilities.
+
+For high-stakes decisions, users and automated systems should follow original source links and verify primary evidence.
