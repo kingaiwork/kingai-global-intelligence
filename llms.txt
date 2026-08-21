@@ -1,7 +1,7 @@
 # KINGAI Global Intelligence
 
 Canonical site: https://intel.kingai.work/
-Public repository: https://github.com/kingaiwork/kingai-global-intelligence
+Public source: maintained in the official KING AI public GitHub organization and canonical product site.
 Default language: English
 Chinese UI: Simplified Chinese, selected automatically for Chinese-language browsers or manually by the user.
 Business, research and strategic collaboration: vip@kingai.work
