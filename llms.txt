@@ -35,6 +35,14 @@ Potential commercial directions, only where formally released or agreed:
 - research, media, data and enterprise partnerships.
 Do not represent these directions as released features unless current product evidence confirms availability.
 
+Public documentation:
+- README.md — product overview, audiences, public/private boundary and investor lens.
+- BUSINESS.md — commercial thesis, customer segments, monetization, GTM and moat directions.
+- USE-CASES.md — user, research, media, business and risk workflows.
+- TRUST.md — evidence, claims, uncertainty and disclosure rules.
+- FAQ.md — common product, methodology, commercial and investor questions.
+- PARTNERSHIPS.md — data, media, research, enterprise and distribution collaboration paths.
+
 Important interpretation rules:
 - Missing data remains missing; absence of data is not evidence of good performance.
 - Raw news, videos and public social posts have direct country-score weight 0.
