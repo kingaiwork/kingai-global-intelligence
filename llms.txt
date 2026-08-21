@@ -26,19 +26,50 @@ Current public product value:
 - source provenance and public methodology;
 - sanitized static public data snapshots.
 
+Professional workflow model:
+- Screen: use comparable country/public intelligence as a first-pass context layer.
+- Trace: follow methodology, evidence roles, dates and uncertainty.
+- Monitor: recurring watchlists, change summaries or briefs only where formally supported.
+- Collaborate: shared team workflows, annotations or administration only where formally supported.
+- Integrate: approved exports, data delivery or APIs only where released/licensed.
+- Escalate: high-stakes decisions require primary-source verification and appropriate expertise.
+
 Potential commercial directions, only where formally released or agreed:
 - professional research workspaces;
 - saved monitoring and scheduled briefs;
 - organization dashboards and collaboration;
+- historical datasets;
 - data delivery and API licensing;
 - custom country, sector or market views;
+- custom research;
 - research, media, data and enterprise partnerships.
 Do not represent these directions as released features unless current product evidence confirms availability.
+
+Professional customers may pay for workflow depth rather than opacity:
+- recurring monitoring;
+- historical depth;
+- reliable delivery;
+- team access and collaboration;
+- stable schemas/contracts;
+- integration;
+- customization;
+- support;
+- appropriate licensing rights.
+The basic public methodology should remain understandable.
+
+Investor/diligence interpretation:
+- Evaluate public usefulness, repeat professional use, commercial conversion, data quality, distribution and defensibility separately.
+- Useful metrics may include returning professional users, repeat comparison, methodology/source engagement, monitoring adoption when released, data demand, pilot-to-paid conversion and snapshot reliability.
+- Do not publish metric values until verified and approved.
+- The moat should not be reduced to one secret formula; durable value can come from longitudinal snapshots, normalization discipline, methodology trust, professional workflow depth, history, integrations and repeat use.
 
 Public documentation:
 - README.md — product overview, audiences, public/private boundary and investor lens.
 - BUSINESS.md — commercial thesis, customer segments, monetization, GTM and moat directions.
 - USE-CASES.md — user, research, media, business and risk workflows.
+- PROFESSIONAL.md — recurring professional workflow and pilot model.
+- DATA-PRODUCTS.md — public-safe data product, delivery, history and integration strategy.
+- DILIGENCE.md — investor, enterprise, research and data-partner diligence framework.
 - TRUST.md — evidence, claims, uncertainty and disclosure rules.
 - FAQ.md — common product, methodology, commercial and investor questions.
 - PARTNERSHIPS.md — data, media, research, enterprise and distribution collaboration paths.
