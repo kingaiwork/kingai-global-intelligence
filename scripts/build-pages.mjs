@@ -15,6 +15,7 @@ const entries = [
   'assets',
   'data',
   'i18n',
+  '.well-known',
   'manifest.webmanifest',
   'robots.txt',
   'sitemap.xml',
