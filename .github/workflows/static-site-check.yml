@@ -28,18 +28,85 @@ jobs:
           test ! -e .deploy-trigger
           test ! -e .github/workflows/deploy-cloudflare-pages.yml
           test ! -e .github/workflows/cloudflare-dry-run.yml
+          test ! -e .env
+          test ! -e .dev.vars
+          test ! -e Dockerfile
 
       - name: Enforce public/private information boundary
         shell: bash
         run: |
-          set -euo pipefail
-          ! grep -R -n -E --exclude-dir=.git --exclude-dir=.github -- \
-            'kingaiwork/[A-Za-z0-9_.-]+|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----|github_pat_[A-Za-z0-9_]+|ghp_[A-Za-z0-9]+' .
-          ! grep -R -n -E --exclude-dir=.git --exclude-dir=.github --exclude='*.md' --exclude='*.html' -- \
-            '(API_KEY|SECRET_KEY|ACCESS_TOKEN|PRIVATE_KEY|DATABASE_URL|WORLD_SECRET)[[:space:]]*[:=][[:space:]]*["'"'][^"'"']+["'"']' .
-          for forbidden in raw private unpublished internal collectors scoring adapters credentials secrets; do
-            test ! -e "$forbidden" || { echo "Forbidden public path: $forbidden"; exit 3; }
-          done
+          python3 - <<'PY'
+          from __future__ import annotations
+          import pathlib, re, sys
+
+          root = pathlib.Path('.')
+          self_path = '.github/workflows/static-site-check.yml'
+          approved_repository_refs = {
+              'kingaiwork/kingai-global-intelligence',
+              'kingaiwork/KINGAIASE-public',
+          }
+          forbidden_basenames = {
+              '.env', '.env.local', '.env.production', '.dev.vars',
+              'wrangler.toml', 'wrangler.json', 'wrangler.jsonc',
+              'docker-compose.yml', 'docker-compose.yaml', 'Dockerfile',
+              'terraform.tfstate', '.npmrc',
+          }
+          forbidden_suffixes = {'.pem', '.key', '.p12', '.pfx', '.tfvars'}
+          forbidden_path_parts = {
+              'raw', 'private', 'unpublished', 'internal', 'collectors',
+              'scoring', 'adapters', 'credentials', 'secrets', 'migrations',
+          }
+          patterns = {
+              'private-key-material': re.compile(r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----', re.I),
+              'github-token': re.compile(r'\b(?:ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b'),
+              'secret-assignment': re.compile(r'\b(?:API_KEY|SECRET_KEY|ACCESS_TOKEN|PRIVATE_KEY|DATABASE_URL|WORLD_SECRET|ADMIN_API_TOKEN|STRIPE_SECRET_KEY|STRIPE_WEBHOOK_SECRET|CLOUDFLARE_API_TOKEN|TURNSTILE_SECRET_KEY)\b\s*[:=]\s*["\'][^"\']+["\']', re.I),
+              'private-filesystem-path': re.compile(r'/(?:etc|opt|var/lib)/(?:kingai|cloudflared|openclaw)(?:/|\b)', re.I),
+              'privileged-command': re.compile(r'\b(?:systemctl|wrangler\s+(?:deploy|d1|kv|r2|pages\s+deploy))\b', re.I),
+              'cloudflare-account-api': re.compile(r'api\.cloudflare\.com/client/v4/accounts/', re.I),
+              'ssh-port-detail': re.compile(r'\b(?:ssh|vps|server|host)\b.{0,50}\b(?:tcp/|-p\s*)?\d{2,5}\b', re.I | re.S),
+              'infrastructure-ip': re.compile(r'\b(?:ssh|vps|server|host|origin)\b.{0,50}\b(?:\d{1,3}\.){3}\d{1,3}\b', re.I | re.S),
+              'internal-config-reference': re.compile(r'\b(?:config|infra|docs)/(?:[^\s`]+/)*(?:repository|infrastructure|runtime|resource|deployment|secret|credential)[^\s`]*\.(?:json|ya?ml|md)\b', re.I),
+          }
+          repo_ref = re.compile(r'\bkingaiwork/[A-Za-z0-9_.-]+\b', re.I)
+          approved_lower = {x.lower() for x in approved_repository_refs}
+          findings = []
+
+          for path in root.rglob('*'):
+              if not path.is_file() or '.git' in path.parts:
+                  continue
+              rel = path.as_posix().removeprefix('./')
+              if rel == self_path:
+                  continue
+              if path.name in forbidden_basenames or path.suffix.lower() in forbidden_suffixes:
+                  findings.append(('forbidden-sensitive-file', rel))
+              if set(path.parts[:-1]) & forbidden_path_parts:
+                  findings.append(('forbidden-sensitive-path', rel))
+              try:
+                  if path.stat().st_size > 2_000_000:
+                      continue
+                  raw = path.read_bytes()
+                  if b'\x00' in raw[:8192]:
+                      continue
+                  text = raw.decode('utf-8', 'replace')
+              except OSError:
+                  continue
+
+              for match in repo_ref.finditer(text):
+                  if match.group(0).lower() not in approved_lower:
+                      findings.append(('non-public-repository-reference', rel))
+                      break
+              for rule, pattern in patterns.items():
+                  if pattern.search(text):
+                      findings.append((rule, rel))
+
+          findings = sorted(set(findings))
+          if findings:
+              for rule, rel in findings:
+                  print(f'FAIL {rule} {rel}', file=sys.stderr)
+              print(f'Public boundary failed with {len(findings)} finding(s).', file=sys.stderr)
+              raise SystemExit(1)
+          print('Public/private boundary passed.')
+          PY
 
       - name: Validate JSON and HTML
         shell: bash
@@ -71,7 +138,7 @@ jobs:
           test ! -e dist/README.md
           test ! -e dist/scripts
           test ! -e dist/package.json
-          ! grep -R -n -E -- 'kingaiwork/[A-Za-z0-9_.-]+|github_pat_|ghp_|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' dist
+          ! grep -R -n -E -- 'github_pat_|ghp_|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' dist
 
       - name: Show sanitized static footprint
         run: du -sh dist && find dist -type f | wc -l
