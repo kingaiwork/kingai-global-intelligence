@@ -63,7 +63,7 @@ jobs:
               'private-filesystem-path': re.compile(r'/(?:etc|opt|var/lib)/(?:kingai|cloudflared|openclaw)(?:/|\b)', re.I),
               'privileged-command': re.compile(r'\b(?:systemctl|wrangler\s+(?:deploy|d1|kv|r2|pages\s+deploy))\b', re.I),
               'cloudflare-account-api': re.compile(r'api\.cloudflare\.com/client/v4/accounts/', re.I),
-              'ssh-port-detail': re.compile(r'\b(?:ssh|vps|server|host)\b.{0,50}\b(?:tcp/|-p\s*)?\d{2,5}\b', re.I | re.S),
+              'ssh-port-detail': re.compile(r'(?:\bssh\b\s*[:=]?\s*\d{2,5}\b|\b(?:ssh|vps|server|host)\b.{0,60}\b(?:ssh\s+port|port|tcp/|-p\s*)\s*[:=]?\s*\d{2,5}\b)', re.I | re.S),
               'infrastructure-ip': re.compile(r'\b(?:ssh|vps|server|host|origin)\b.{0,50}\b(?:\d{1,3}\.){3}\d{1,3}\b', re.I | re.S),
               'internal-config-reference': re.compile(r'\b(?:config|infra|docs)/(?:[^\s`]+/)*(?:repository|infrastructure|runtime|resource|deployment|secret|credential)[^\s`]*\.(?:json|ya?ml|md)\b', re.I),
           }
