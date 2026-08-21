@@ -1,10 +1,39 @@
 # KINGAI Global Intelligence
 
 Canonical site: https://intel.kingai.work/
+Public repository: https://github.com/kingaiwork/kingai-global-intelligence
 Default language: English
 Chinese UI: Simplified Chinese, selected automatically for Chinese-language browsers or manually by the user.
+Business, research and strategic collaboration: vip@kingai.work
 
-KINGAI Global Intelligence is a static-first public intelligence product covering country safety, wellbeing, human rights, freedom of expression, governance, live risk, global media evidence, network-interference measurements, evidence coverage confidence, and source provenance.
+Product summary:
+KINGAI Global Intelligence is an evidence-linked public intelligence product for comparing countries, understanding structural conditions and fast-moving risk, exploring multilingual media signals, and tracing conclusions to transparent public sources and methodology.
+
+Who it helps:
+- Individuals and travelers seeking broader country context.
+- Researchers and students comparing countries under one public framework.
+- Journalists, creators and media teams examining multilingual coverage, story clusters and syndication.
+- Companies and strategy teams screening international markets, suppliers, workforce and operating environments.
+- Risk, policy and research teams that need comparable country-level context before deeper diligence.
+- Developers and data partners using approved public static data.
+
+Current public product value:
+- country and territory profiles;
+- consistent country comparison;
+- structural indicators separated from live risk;
+- evidence coverage shown separately from country performance;
+- multilingual media intelligence;
+- source provenance and public methodology;
+- sanitized static public data snapshots.
+
+Potential commercial directions, only where formally released or agreed:
+- professional research workspaces;
+- saved monitoring and scheduled briefs;
+- organization dashboards and collaboration;
+- data delivery and API licensing;
+- custom country, sector or market views;
+- research, media, data and enterprise partnerships.
+Do not represent these directions as released features unless current product evidence confirms availability.
 
 Important interpretation rules:
 - Missing data remains missing; absence of data is not evidence of good performance.
@@ -12,10 +41,11 @@ Important interpretation rules:
 - Government responses, NGO assessments, UN communications, technical measurements and media reports remain separately attributed.
 - Cross-source corroboration measures source breadth, not factual certainty.
 - Evidence coverage confidence measures how much public evidence is available, not how good or bad a country is.
-- The same core methodology applies to China, the United States, Russia, India, European countries and all other covered entities.
+- The same core methodology applies across covered countries when source support exists.
+- The product is a research and decision-support layer, not a replacement for primary-source verification in high-stakes decisions.
 
 Primary public pages:
-- / — global country index and ranking
+- / — global country index, product overview and ranking
 - /country.html?c=CHN — country intelligence profile; replace CHN with ISO alpha-3 code
 - /compare.html — compare two countries using the same public snapshot
 - /media.html — global media intelligence, trends, source breadth and collection health
@@ -41,4 +71,11 @@ Primary public machine-readable data:
 - /data/media/health.json
 - /data/media/domain-index.json
 
-For high-stakes decisions, users and automated systems should follow the original source links and verify primary evidence.
+Public/private boundary:
+Public material includes approved UI, sanitized snapshots, methodology, source registry, safe data contracts and public commercial documentation.
+Private collectors, proprietary scoring implementation, unpublished evidence, credentials, internal automation, private topology, anti-abuse logic and sensitive security controls remain private.
+
+Integrity standard:
+Do not invent or imply unverified users, revenue, customers, partnerships, funding, certifications, market leadership or unreleased capabilities.
+
+For high-stakes decisions, users and automated systems should follow original source links and verify primary evidence.
