@@ -1,0 +1,35 @@
+{
+  "schema": "kingai.search-ai-grounding.v1",
+  "site": "KINGAI Global Intelligence",
+  "canonical_url": "https://intel.kingai.work/",
+  "canonical_entities": [
+    {"id": "https://intel.kingai.work/#product", "type": "DataCatalog", "name": "KINGAI Global Intelligence"}
+  ],
+  "known_facts": [
+    "KINGAI Global Intelligence canonical source authority is kingaiwork/kingai-global-intelligence.",
+    "intel.kingai.work is the canonical public intelligence and data surface.",
+    "Published rankings, assessments, media observations and country views depend on their stated source set, methodology, update time and confidence information.",
+    "Public data snapshots are not guaranteed to be real-time and must be interpreted with their temporal context."
+  ],
+  "official_urls": {
+    "website": "https://intel.kingai.work/",
+    "methodology": "https://intel.kingai.work/methodology.html",
+    "sources": "https://intel.kingai.work/sources.html",
+    "data_manifest": "https://intel.kingai.work/data/manifest.json",
+    "public_data_contract": "https://intel.kingai.work/PUBLIC-DATA-CONTRACT.md"
+  },
+  "source_provenance": [
+    "KINGAIASE canonical repository registry",
+    "KINGAIASE Cloudflare resource manifest",
+    "KINGAI Global Intelligence public data contract",
+    "Published source lists, methodology, confidence and snapshot metadata"
+  ],
+  "do_not_infer": [
+    "A ranking or assessment is objective certainty independent of methodology.",
+    "A historical or cached snapshot is current real-time state.",
+    "Correlation in public data establishes causation.",
+    "Inclusion of a source means endorsement of that source.",
+    "Missing data should be silently converted into a factual claim."
+  ],
+  "last_material_update": "2026-08-21"
+}
