@@ -2,10 +2,14 @@
 
 Architecture baseline: `2026-08-23 / current-v2`
 
-This repository is the registered public-delivery surface for sanitized intelligence output. The private system authority is `kingaiwork/KINGAIASE`; the private intelligence implementation authority is registered separately.
+This repository is the registered **public-delivery surface for sanitized intelligence output**. It is not the private implementation, source, infrastructure or data authority.
 
-Cloudflare is the public edge. D1 is the platform single-writer identity/bounded-transaction authority. Registered VPS capacity carries PostgreSQL 17 + pgvector and heavy/private workloads. VPS application/database/admin ports are never directly public. Zero-cost mode forbids automatic paid-resource enablement.
+Public delivery rules:
 
-This public repository must contain only sanitized validated public output and must not contain private provider-access metadata, Secret locations, credentials, unpublished evidence or private topology details.
+- publish only validated sanitized public snapshots and public UI assets;
+- never reveal private repository locations, private collectors/scoring logic, unpublished evidence, internal topology, private API/database design, provider-access metadata, Secret locations or credential values;
+- never accept private source as a public-delivery dependency;
+- private-to-public publication is one-way and must pass validation/sanitization before release;
+- a commit is not deployment evidence; verify the real public endpoint and published snapshot.
 
-A commit is not deployment evidence; require real endpoint/runtime readback.
+Authorized private operators use the private KING AI control plane for takeover and provider procedures. Those details are intentionally not replicated in this public repository.
