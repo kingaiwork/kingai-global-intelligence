@@ -50,6 +50,7 @@ await stat(path.join(out, 'assets', 'kingai-ui-2026.css'));
 
 const supportTag = '<script src="https://kefu.kingai.work/auto.js" data-site="global-intelligence" async data-kingai-customer-os="1"></script>';
 const uiTag = '<link rel="stylesheet" href="/assets/kingai-ui-2026.css" data-kingai-ui-2026="1">';
+const lightMeta = '<meta name="theme-color" content="#F5F5F7"><meta name="color-scheme" content="light">';
 let normalized = 0;
 
 async function normalizeHtml(dir) {
@@ -62,7 +63,10 @@ async function normalizeHtml(dir) {
     if (!entry.isFile() || !entry.name.endsWith('.html')) continue;
     const before = await readFile(file, 'utf8');
     let html = before;
-    if (!html.includes('data-kingai-ui-2026') && html.includes('</head>')) html = html.replace('</head>', `${uiTag}</head>`);
+    html = html.replace(/<meta\s+[^>]*name=["']theme-color["'][^>]*>/gi, '');
+    html = html.replace(/<meta\s+[^>]*name=["']color-scheme["'][^>]*>/gi, '');
+    html = html.replace(/<link\s+[^>]*data-kingai-ui-2026[^>]*>/gi, '');
+    if (html.includes('</head>')) html = html.replace('</head>', `${lightMeta}${uiTag}</head>`);
     if (!html.includes('data-kingai-customer-os') && html.includes('</body>')) html = html.replace('</body>', `${supportTag}</body>`);
     if (html !== before) {
       await writeFile(file, html);
@@ -72,4 +76,15 @@ async function normalizeHtml(dir) {
 }
 
 await normalizeHtml(out);
-console.log(`Cloudflare Pages output ready: ${out}; normalized public HTML=${normalized}`);
+
+const manifestPath = path.join(out, 'manifest.webmanifest');
+try {
+  const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
+  manifest.background_color = '#FFFFFF';
+  manifest.theme_color = '#F5F5F7';
+  await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
+} catch (error) {
+  if (error?.code !== 'ENOENT') throw error;
+}
+
+console.log(`Cloudflare Pages output ready: ${out}; normalized public HTML=${normalized}; browser/PWA chrome=neutral-light`);
