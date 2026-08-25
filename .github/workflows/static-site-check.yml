@@ -91,10 +91,14 @@ jobs:
               except OSError:
                   continue
 
-              for match in repo_ref.finditer(text):
-                  if match.group(0).lower() not in approved_lower:
-                      findings.append(('non-public-repository-reference', rel))
-                      break
+              # .kingai is repository governance metadata, not shipped public payload.
+              # It may name the private control-plane authority, but it is still scanned
+              # below for secret material, privileged commands, IPs, and internal paths.
+              if not rel.startswith('.kingai/'):
+                  for match in repo_ref.finditer(text):
+                      if match.group(0).lower() not in approved_lower:
+                          findings.append(('non-public-repository-reference', rel))
+                          break
               for rule, pattern in patterns.items():
                   if pattern.search(text):
                       findings.append((rule, rel))
