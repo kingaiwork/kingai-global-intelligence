@@ -1,0 +1,14 @@
+{
+  "schema":"leo.project.v1",
+  "project_id":"kingai-global-intelligence-public",
+  "managed_by":"LEO",
+  "portfolio_scope":"kingai-public-sanitized",
+  "module_role":"sanitized-public-intelligence-delivery",
+  "source_authority":"kingaiwork/kingai-global-intelligence",
+  "upstream":"sanitized-projection-only",
+  "private_source_import_allowed":false,
+  "secrets_allowed":false,
+  "customer_private_data_allowed":false,
+  "authority_transfer_allowed":false,
+  "must_not_own":["private-intelligence-source","LEO-private-continuity","KINGAI-customer-identity-writer","shared-infrastructure-authority","database-writer-authority"]
+}
