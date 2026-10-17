@@ -1,0 +1,8 @@
+/* KINGAI KHDS 2026 V2 - additive shared-identity and accessibility layer. */
+/* Product UI and feature-specific palettes retain their own authority. */
+:root{--kingai-cloud:#FCFCFA;--kingai-ivory:#F7F5F0;--kingai-ink:#2B2B2F;--kingai-sage:#7FA8A1;--kingai-muted:#55585E;--kingai-control:#39433F;}
+html{-webkit-text-size-adjust:100%}
+body,button,input,textarea,select{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Inter,"PingFang SC","Microsoft YaHei",sans-serif}
+:where(a,button,input,select,textarea,summary):focus-visible{outline:3px solid var(--kingai-sage);outline-offset:3px}
+:where(img.kingai-master-mark){display:inline-block;object-fit:contain;flex-shrink:0;vertical-align:middle}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
