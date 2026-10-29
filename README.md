@@ -248,3 +248,7 @@ Source-specific licensing and attribution requirements must be preserved in `dat
 For research, data, enterprise, distribution, media or investment discussions:
 
 **vip@kingai.work**
+
+## Publisher
+
+Global Intelligence is published by KINGAI, an AI-driven future technology company founded by Chinese entrepreneurs in the United States. KINGAI builds websites, apps, custom software and AI staff for small businesses. Official site: https://kingai.work · Product page: https://kingai.work/products/intel/ · GitHub profile: https://github.com/kingaiwork
