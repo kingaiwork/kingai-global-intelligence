@@ -252,3 +252,11 @@ For research, data, enterprise, distribution, media or investment discussions:
 ## Publisher
 
 Global Intelligence is published by KINGAI, an AI-driven future technology company founded by Chinese entrepreneurs in the United States. KINGAI builds websites, apps, custom software and AI staff for small businesses. Official site: https://kingai.work · Product page: https://kingai.work/products/intel/ · GitHub profile: https://github.com/kingaiwork
+
+## Corporate operator and public disclosure · 企业运营与公开声明
+
+KINGAI Global Intelligence is operated as a KINGAI product by **KINGAIWORK LLC**, a Wyoming-registered US limited liability company (formed November 1, 2026; Wyoming Entity ID 2026-002120886).
+
+**Official business:** https://kingai.work · **Business contact:** vip@kingai.work · **Company record:** [KINGAIWORK LLC](https://github.com/kingaiwork/kingaiwork)
+
+Only public product information, validated source references, published data contracts and company contact information belong in this repository. Private individuals' names, personal email addresses, personal phone numbers, residential addresses, proprietary acquisition systems and customer records must not be included in the public release surface. Product development and existing third-party licenses retain their established rights and boundaries. This repository does not publish project rates or contract values.
