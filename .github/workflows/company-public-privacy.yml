@@ -1,0 +1,69 @@
+name: Company public privacy gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  company-public-privacy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Check company-facing documents without exposing matched values
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          import sys
+
+          docs = [Path("README.md"), Path("PUBLICATION-POLICY.md"), Path("COMPANY.md"), Path("llms.txt")]
+          docs.extend(sorted(Path("docs").rglob("*.md")) if Path("docs").exists() else [])
+          docs = [p for p in docs if p.is_file()]
+
+          creator_identity = re.compile("jack" + r"[\s._-]*" + "hao" + "|" + "郝" + "才子", re.I)
+          personal_email = re.compile(r"(?i)\b[A-Za-z0-9_.+%-]+@(?:gmail|outlook|hotmail|yahoo|icloud|qq|163)\.(?:com|cn)\b")
+          state_name = "Wyo" + "ming"
+          entity_number = "2026-" + "002120886"
+          precise_address = "Gould" + " St"
+          formation_date = re.compile(r"(?i)\b(?:Nov(?:ember)?\s+1,?\s+2026|2026-11-01)\b")
+          money = re.compile(r"(?i)(?:US\$|USD\s*|\$)\s*\d[\d,]*(?:\.\d{1,2})?")
+          commercial_context = re.compile(r"(?i)(?:annual fee|implementation fee|pricing table|年费|实施费|起售价|企业版年费)")
+
+          findings = []
+          for path in docs:
+              for index, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+                  lowered = line.lower()
+                  problem = []
+                  if creator_identity.search(line):
+                      problem.append("personal-creator-linkage")
+                  if personal_email.search(line):
+                      problem.append("private-email")
+                  if state_name.lower() in lowered and any(k in lowered for k in ("kingaiwork", "registered", "company", "llc", "注册", "公司")):
+                      problem.append("state-of-registration")
+                  if entity_number in line or precise_address.lower() in lowered:
+                      problem.append("registration-identifiers")
+                  if any(k in lowered for k in ("entity id", "registered address", "州实体编号", "州实体号", "注册地址")):
+                      problem.append("registration-detail")
+                  if formation_date.search(line) and any(k in lowered for k in ("llc", "company", "registered", "formed", "formation", "成立", "注册")):
+                      problem.append("formation-date")
+                  if money.search(line) and commercial_context.search(line):
+                      problem.append("public-price")
+                  if problem:
+                      findings.append(f"{path}:{index} ({','.join(problem)})")
+          for item in findings:
+              print("FAIL " + item, file=sys.stderr)
+          if findings:
+              sys.exit(1)
+          print(f"PASS: {len(docs)} company-facing documents meet public privacy policy")
+          PY
