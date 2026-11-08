@@ -33,10 +33,20 @@ jobs:
 
           creator_identity = re.compile("jack" + r"[\s._-]*" + "hao" + "|" + "郝" + "才子", re.I)
           personal_email = re.compile(r"(?i)\b[A-Za-z0-9_.+%-]+@(?:gmail|outlook|hotmail|yahoo|icloud|qq|163)\.(?:com|cn)\b")
-          state_name = "Wyo" + "ming"
-          entity_number = "2026-" + "002120886"
-          precise_address = "Gould" + " St"
-          formation_date = re.compile(r"(?i)\b(?:Nov(?:ember)?\s+1,?\s+2026|2026-11-01)\b")
+          registration_detail = re.compile(
+              r"(?i)(?:\b(?:state\s+)?entity\s*(?:id|number)\b|"
+              r"\b(?:registered|registration)\s+address\b|"
+              r"\b\d{4}-\d{7,12}\b|"
+              r"\b\d{1,6}\s+(?:N|S|E|W)\s+\w+\s+(?:St|Street|Ave|Avenue|Rd|Road)\b|"
+              r"\b[A-Z][a-z]+-registered\b|"
+              r"\bregistered\s+(?:in|at)\s+(?!(?:the\s+)?United\s+States\b|USA\b|US\b)[A-Z][a-z]+\b|"
+              r"州实体(?:号|编号)|注册地址|注册日期|美国.{1,10}州注册)"
+          )
+          formation_date = re.compile(
+              r"(?i)\b(?:19|20)\d{2}[-/]\d{2}[-/]\d{2}\b|"
+              r"\b[A-Z][a-z]+\s+\d{1,2},?\s+(?:19|20)\d{2}\b"
+          )
+          corporate_context = re.compile(r"(?i)\b(?:LLC|Entity ID|formed|formation)\b|成立日期|注册")
           money = re.compile(r"(?i)(?:US\$|USD\s*|\$)\s*\d[\d,]*(?:\.\d{1,2})?")
           commercial_context = re.compile(r"(?i)(?:annual fee|implementation fee|pricing table|年费|实施费|起售价|企业版年费)")
 
@@ -49,13 +59,9 @@ jobs:
                       problem.append("personal-creator-linkage")
                   if personal_email.search(line):
                       problem.append("private-email")
-                  if state_name.lower() in lowered and any(k in lowered for k in ("kingaiwork", "registered", "company", "llc", "注册", "公司")):
-                      problem.append("state-of-registration")
-                  if entity_number in line or precise_address.lower() in lowered:
-                      problem.append("registration-identifiers")
-                  if any(k in lowered for k in ("entity id", "registered address", "州实体编号", "州实体号", "注册地址")):
+                  if registration_detail.search(line):
                       problem.append("registration-detail")
-                  if formation_date.search(line) and any(k in lowered for k in ("llc", "company", "registered", "formed", "formation", "成立", "注册")):
+                  if formation_date.search(line) and corporate_context.search(line):
                       problem.append("formation-date")
                   if money.search(line) and commercial_context.search(line):
                       problem.append("public-price")
