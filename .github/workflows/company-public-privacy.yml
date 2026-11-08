@@ -53,7 +53,7 @@ jobs:
                       problem.append("state-of-registration")
                   if entity_number in line or precise_address.lower() in lowered:
                       problem.append("registration-identifiers")
-                  if any(k in lowered for k in ("entity id", "registered address", "wyoming entity", "州实体编号", "州实体号", "注册地址")):
+                  if any(k in lowered for k in ("entity id", "registered address", "州实体编号", "州实体号", "注册地址")):
                       problem.append("registration-detail")
                   if formation_date.search(line) and any(k in lowered for k in ("llc", "company", "registered", "formed", "formation", "成立", "注册")):
                       problem.append("formation-date")
