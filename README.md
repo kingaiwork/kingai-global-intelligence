@@ -260,3 +260,10 @@ KINGAI Global Intelligence is operated as a KINGAI product by **KINGAIWORK LLC**
 **Official business:** https://kingai.work · **Business contact:** vip@kingai.work · **Further company information:** https://kingai.work
 
 Only public product information, validated source references, published data contracts and company contact information belong in this repository. Private individuals' names, personal email addresses, personal phone numbers, residential addresses, proprietary acquisition systems and customer records must not be included in the public release surface. Product development and existing third-party licenses retain their established rights and boundaries. This repository does not publish project rates or contract values.
+
+---
+
+**KINGAIWORK LLC** — the company behind this project.
+Legal name: KINGAIWORK LLC · Formed in Wyoming, USA on November 1, 2026 · Wyoming Entity ID: 2026-002120886
+Registered address: 30 N Gould St Ste R, Sheridan, WY 82801, USA
+Website: https://kingai.work · Contact: vip@kingai.work
